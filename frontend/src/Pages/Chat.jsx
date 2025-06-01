@@ -2,6 +2,7 @@ import { useState, useEffect, useContext, useRef } from 'react';
 import { SocketContext } from '../main.jsx';
 import { useParams } from 'react-router-dom';
 import Prompt from './Prompt.jsx';
+import Loader from '../components/Loader.jsx';
 
 function Chat() {
   const [message, setMessage] = useState('');
@@ -12,6 +13,8 @@ function Chat() {
   const socketRef = useContext(SocketContext);
   const [users, setusers] = useState([])
   const [closed, setClosed] = useState(true)
+  const [sending, setSending] = useState(false);
+
   useEffect(() => {
     if (!localStorage.getItem("username")) setClosed(false);
     else {
@@ -21,6 +24,7 @@ function Chat() {
         setChats((prev) => [...prev, payload]);
       });
       socketRef.on("download-file", (payload) => {
+        setSending(false);
         setChats((prev) => [...prev, payload])
       })
       socketRef.on('users', (users) => {
@@ -36,6 +40,7 @@ function Chat() {
     e.preventDefault();
     if (message.trim()) {
       if (file) {
+            setSending(true)
         const formData = new FormData();
         formData.append("file", file);
         fetch(`http://localhost:3000/api/v1/session/upload-file`, {
@@ -45,12 +50,8 @@ function Chat() {
         }).then(response => response.json())
           .then(response => {
             const fileLink = response.data;
-            socketRef.emit("file", { slug, username, fileLink, message }
-            )
+            socketRef.emit("file", { slug, username, fileLink, message })
           });
-        // console.log(fileLink)
-        // if (fileLink)
-        //   
       }
       else {
         socketRef.emit('message', { slug, username, message });
@@ -62,7 +63,7 @@ function Chat() {
 
   return (
     <div className="min-h-screen bg-neutral-900 text-white flex items-center justify-center px-4">
-      {!closed && <Prompt closeIt={()=>setClosed(true)}></Prompt>}
+      {!closed && <Prompt closeIt={() => setClosed(true)}></Prompt>}
       <div className="w-full max-w-6xl h-[90vh] flex border border-neutral-700 rounded-xl overflow-hidden">
         {/* Sidebar for Users */}
         <div className="w-64 bg-neutral-800 border-r border-neutral-700 p-4 space-y-2 overflow-y-auto">
@@ -115,9 +116,16 @@ function Chat() {
                 </div>
               )
             })}
+            {sending && (
+              <div className="flex justify-end py-10 pr-2">
+                <div className="relative w-[40px] h-[40px]">
+                  <Loader />
+                </div>
+              </div>
+            )}
           </div>
-
           <form
+          
             onSubmit={handleSubmit}
             className="flex items-center gap-2 p-4 border-t border-neutral-700 bg-neutral-900"
           >
