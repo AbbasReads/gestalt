@@ -10,7 +10,7 @@ import { io } from "socket.io-client";
 export const SocketContext = createContext();
 
 // Create socket instance
-const socket = io("http://localhost:3000");
+const socket = io(`http://localhost:3000/`)
 
 // Get root element
 const root = document.getElementById("root");

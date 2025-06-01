@@ -18,8 +18,9 @@ const uploadFile=asyncHandler(async(req,res)=>{
     const uploadedLink=await uploadOnCloudinary(localFilePath)
     if(!uploadedLink)
         throw new apiError(401,"File upload failed")
+    const downloadLink=uploadedLink.secure_url.replace("upload/","upload/fl_attachment/")
     return res.status(202).json(
-        new apiResponse(202,uploadedLink,"File link generated successfully.")
+        new apiResponse(202,downloadLink,"File link generated successfully.")
     )
 })
 export {createSession,uploadFile}
