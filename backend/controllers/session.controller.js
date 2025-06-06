@@ -10,7 +10,8 @@ const createSession = asyncHandler(async (req, res) => {
   const passcode = nanoid(4);
   const sessionURL = `${req.protocol}://${req.get('host')}/session/${sessionId}/${passcode}`;
 
-  await Session.create({ sessionId });  // Wait for DB insert
+  const doc=await Session.create({ sessionId }); 
+  console.log(doc) // Wait for DB insert
   return res.status(200).json(
     new apiResponse(200, { sessionId, sessionURL, passcode }, "Id generated.")
   );

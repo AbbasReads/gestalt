@@ -40,9 +40,9 @@ connectDB()
         );
 
         io.to(slug).emit("reply", {
-          username,
-          message,
-          downloadLink: ''
+          sentBy:username,
+          text:message,
+          file:''
         });
       });
 
@@ -62,12 +62,11 @@ connectDB()
 
         const publicId = payload.fileLink.split("/").at(-1);
         sessionUsers[payload.slug].files.push(publicId);
-        console.log(sessionUsers);
 
         io.to(payload.slug).emit("download-file", {
-          username: payload.username,
-          downloadLink: payload.fileLink,
-          message: payload.message
+          sentBy: payload.username,
+          file: payload.fileLink,
+          text: payload.message
         });
       });
 
@@ -82,8 +81,6 @@ connectDB()
               usernames: [],
               files: []
             };
-
-            console.log(sessionUsers);
             socket.emit("chatpage", {
               sessionId: response.data.sessionId,
               passcode: response.data.passcode
@@ -94,7 +91,7 @@ connectDB()
           });
       });
 
-      socket.on("join-user", (payload) => {
+      socket.on("join-user", async (payload) => {
         console.log(`${payload.username} (${socket.id}) joining ${payload.slug}`);
         const { slug, passcode, username } = payload;
 
@@ -106,15 +103,14 @@ connectDB()
           socket.username = username;
 
           sessionUsers[slug].usernames.push(username);
-          console.log(sessionUsers);
-
+          const session = await Session.findOne({sessionId:slug})
+          socket.emit('joined',{messages:session.messages})
           io.to(slug).emit("users", sessionUsers[slug].usernames);
         }
       });
 
       socket.on("disconnect", () => {
         const { sessionId, username } = socket;
-        console.log(sessionUsers);
 
         if (sessionId && sessionUsers[sessionId]?.usernames) {
           sessionUsers[sessionId].usernames = sessionUsers[sessionId].usernames.filter(
