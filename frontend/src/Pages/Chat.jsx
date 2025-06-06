@@ -22,24 +22,18 @@ function Chat() {
     else {
       // socketRef.current = io('http://localhost:3000');
       socketRef.emit('join-user', { slug, passcode, username });
-
+      socketRef.on('joined', ({ messages }) => {
+        setChats(messages);
+      })
       socketRef.on("unauthorised", () => {
         navigate('/error');
       })
 
       socketRef.on('reply', (payload) => {
-        setChats(prev => {
-          const updated = [...prev, payload];
-          localStorage.setItem(`messages-${slug}`, JSON.stringify(updated));
-          return updated;
-        });
+        setChats(prev => [...prev, payload]);
       });
       socketRef.on("download-file", (payload) => {
-        setChats(prev => {
-          const updated = [...prev, payload];
-          localStorage.setItem("messages", JSON.stringify(updated));
-          return updated;
-        });
+        setChats(prev => [...prev, payload]);
       })
       socketRef.on('users', (users) => {
         setusers(users);
@@ -102,30 +96,30 @@ function Chat() {
         <div className="flex-1 flex flex-col">
           <div className="flex-1 overflow-y-auto p-4 space-y-2 bg-neutral-800">
             {chats.map((chat, i) => {
-              if (!chat.downloadLink) return (
+              if (!chat.file) return (
                 <div
                   key={i}
-                  className={`max-w-xs px-4 py-2 rounded-lg break-words ${chat.username === username
+                  className={`max-w-xs px-4 py-2 rounded-lg break-words ${chat.sentBy === username
                     ? 'ml-auto bg-blue-600'
                     : 'mr-auto bg-neutral-700'
                     }`}
                 >
-                  <span className="text-xs opacity-70 block mb-1">{chat.username}</span>
-                  <span>{chat.message}</span>
+                  <span className="text-xs opacity-70 block mb-1">{chat.sentBy}</span>
+                  <span>{chat.text}</span>
                 </div>
               )
               else return (
                 <div
                   key={i}
-                  className={`max-w-xs px-4 py-2 rounded-lg break-words ${chat.username === username
+                  className={`max-w-xs px-4 py-2 rounded-lg break-words ${chat.sentBy === username
                     ? 'ml-auto bg-blue-600'
                     : 'mr-auto bg-neutral-700'
                     }`}
                 >
-                  <span className="text-xs opacity-70 block mb-1">{chat.username}</span>
-                  <span>{chat.message}</span>
+                  <span className="text-xs opacity-70 block mb-1">{chat.sentBy}</span>
+                  <span>{chat.text}</span>
                   <a
-                    href={chat.downloadLink}
+                    href={chat.file}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block mt-2 px-3 py-1 text-sm bg-neutral-900 rounded-md text-blue-300 hover:underline"
