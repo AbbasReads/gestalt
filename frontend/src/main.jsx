@@ -5,6 +5,7 @@ import LandingPage from "./Pages/LandingPage";
 import Chat from "./Pages/Chat";
 import "./index.css";
 import { io } from "socket.io-client";
+import Unauthorised from "./Pages/Unauthorised";
 
 // Create socket context
 export const SocketContext = createContext();
@@ -21,7 +22,9 @@ ReactDOM.createRoot(root).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingPage />} />
-        <Route path="/session/:slug" element={<Chat />} />
+        <Route path="/session/:slug/:passcode" element={<Chat />} />
+        <Route path="/error" element={<Unauthorised/>}></Route>
+        <Route path="/session/:slug" element={<Unauthorised/>}></Route>
       </Routes>
     </BrowserRouter>
   </SocketContext.Provider>

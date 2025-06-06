@@ -1,19 +1,15 @@
-import mongoose, { mongo } from 'mongoose';
+import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const sessionSchema = new Schema({
-    createdBy:String,
     sessionId:String,
-    texts:[{
-        text:String,
-        sentBy:String
-    }],
-    files:[
+    messages:[
         {
-            link:String,
+            text:String,
+            file:String,
             sentBy:String
         }
     ]
 });
 
-export const sessionModel=mongoose.model("sessionModel",sessionSchema)
+export const Session=mongoose.model("Session",sessionSchema)

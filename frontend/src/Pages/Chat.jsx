@@ -3,13 +3,15 @@ import { SocketContext } from '../main.jsx';
 import { useParams } from 'react-router-dom';
 import Prompt from './Prompt.jsx';
 import Loader from '../components/Loader.jsx';
+import { useNavigate } from 'react-router-dom';
 
 function Chat() {
+  const navigate = useNavigate();
   const [message, setMessage] = useState('');
   const [chats, setChats] = useState([]);
   const username = localStorage.getItem("username")
   const [file, setFile] = useState("")
-  const { slug } = useParams();
+  const { slug, passcode } = useParams();
   const socketRef = useContext(SocketContext);
   const [users, setusers] = useState([])
   const [closed, setClosed] = useState(true)
@@ -19,13 +21,25 @@ function Chat() {
     if (!localStorage.getItem("username")) setClosed(false);
     else {
       // socketRef.current = io('http://localhost:3000');
-      socketRef.emit('join-user', { slug, username });
+      socketRef.emit('join-user', { slug, passcode, username });
+
+      socketRef.on("unauthorised", () => {
+        navigate('/error');
+      })
+
       socketRef.on('reply', (payload) => {
-        setChats((prev) => [...prev, payload]);
+        setChats(prev => {
+          const updated = [...prev, payload];
+          localStorage.setItem(`messages-${slug}`, JSON.stringify(updated));
+          return updated;
+        });
       });
       socketRef.on("download-file", (payload) => {
-        setSending(false);
-        setChats((prev) => [...prev, payload])
+        setChats(prev => {
+          const updated = [...prev, payload];
+          localStorage.setItem("messages", JSON.stringify(updated));
+          return updated;
+        });
       })
       socketRef.on('users', (users) => {
         setusers(users);
@@ -40,7 +54,7 @@ function Chat() {
     e.preventDefault();
     if (message.trim()) {
       if (file) {
-            setSending(true)
+        setSending(true)
         const formData = new FormData();
         formData.append("file", file);
         fetch(`http://localhost:3000/api/v1/session/upload-file`, {
@@ -49,8 +63,14 @@ function Chat() {
 
         }).then(response => response.json())
           .then(response => {
-            const fileLink = response.data;
-            socketRef.emit("file", { slug, username, fileLink, message })
+            if (response.statusCode == 402) {
+              socketRef.emit('message', { slug, username, message: response.message })
+            }
+            else {
+              const fileLink = response.data;
+              socketRef.emit("file", { slug, username, fileLink, message })
+            }
+            setSending(false);
           });
       }
       else {
@@ -125,7 +145,7 @@ function Chat() {
             )}
           </div>
           <form
-          
+
             onSubmit={handleSubmit}
             className="flex items-center gap-2 p-4 border-t border-neutral-700 bg-neutral-900"
           >
