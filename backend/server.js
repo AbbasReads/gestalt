@@ -36,8 +36,7 @@ connectDB()
                 file: ''
               }
             }
-          },
-          { new: true }
+          }
         );
 
         io.to(slug).emit("reply", {
@@ -47,8 +46,19 @@ connectDB()
         });
       });
 
-      socket.on("file", (payload) => {
-        if (!sessionUsers[payload.slug]?.files) sessionUsers[payload.slug].files = [];
+      socket.on("file",async (payload) => {
+        await Session.findOneAndUpdate(
+          { sessionId: payload.slug },
+          {
+            $push: {
+              messages: {
+                text: payload.message,
+                sentBy: payload.username,
+                file: payload.fileLink
+              }
+            }
+          }
+        );
 
         const publicId = payload.fileLink.split("/").at(-1);
         sessionUsers[payload.slug].files.push(publicId);
