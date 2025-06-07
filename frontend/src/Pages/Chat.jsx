@@ -96,7 +96,7 @@ function Chat() {
           </div>
           <div className="pt-4 flex justify-center">
             <div className="flex flex-col items-center space-y-2">
-              <label className="text-sm text-gray-400">Scan to join</label>
+              <label className="text-sm text-gray-400">Enter this URL or scan to join </label>
               <img
                 src={`http://api.qrserver.com/v1/create-qr-code/?data=${document.URL}&size=150x150&margin=19`}
                 alt="QR Code"
@@ -182,9 +182,7 @@ function Chat() {
                 onChange={(e) => setFile(e.target.files[0])}
               />
             </div>
-
-
-            <Button text="Send" handleClick={handleSubmit} />
+            <Button disabled={sending} text="Send" handleClick={handleSubmit} />
           </form>
 
         </div>
