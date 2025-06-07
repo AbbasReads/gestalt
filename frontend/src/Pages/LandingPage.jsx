@@ -41,10 +41,10 @@ const LandingPage = () => {
       <div className="text-center px-4">
         <ScrambledText
           className="text-6xl font-bold text-white tracking-wide"
-          radius={100}
+          radius={50}
           duration={1.2}
           speed={0.5}
-          scrambleChars=".:"
+          scrambleChars="~_"
         >
           Gestalt
         </ScrambledText>

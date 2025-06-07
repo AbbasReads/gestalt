@@ -4,7 +4,7 @@ import styled from 'styled-components';
 const Button = (props) => {
   return (
     <StyledWrapper>
-      <button onClick={props.handleClick}>
+      <button disabled={props.disabled} onClick={props.handleClick}>
         <span className="circle1" />
         <span className="circle2" />
         <span className="circle3" />
