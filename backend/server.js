@@ -40,13 +40,13 @@ connectDB()
         );
 
         io.to(slug).emit("reply", {
-          sentBy:username,
-          text:message,
-          file:''
+          sentBy: username,
+          text: message,
+          file: ''
         });
       });
 
-      socket.on("file",async (payload) => {
+      socket.on("file", async (payload) => {
         await Session.findOneAndUpdate(
           { sessionId: payload.slug },
           {
@@ -103,13 +103,13 @@ connectDB()
           socket.username = username;
 
           sessionUsers[slug].usernames.push(username);
-          const session = await Session.findOne({sessionId:slug})
-          socket.emit('joined',{messages:session.messages})
+          const session = await Session.findOne({ sessionId: slug })
+          socket.emit('joined', { messages: session.messages })
           io.to(slug).emit("users", sessionUsers[slug].usernames);
         }
       });
 
-      socket.on("disconnect", () => {
+      socket.on("disconnect", async () => {
         const { sessionId, username } = socket;
 
         if (sessionId && sessionUsers[sessionId]?.usernames) {
@@ -120,9 +120,12 @@ connectDB()
           if (sessionUsers[sessionId].usernames.length > 0) {
             io.to(sessionId).emit("users", sessionUsers[sessionId].usernames);
           } else {
-            sessionUsers[sessionId]?.files?.forEach(async (element) => {
-              await deleteFile(element);
-            });
+            // sessionUsers[sessionId]?.files?.forEach(async (element) => {
+            //   await deleteFile(element);
+            // });
+            Session.findOneAndDelete({ sessionId }).catch(err=>{
+              console.log(err)
+            })
             delete sessionUsers[sessionId];
           }
         }

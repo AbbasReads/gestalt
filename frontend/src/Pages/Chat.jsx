@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import Prompt from './Prompt.jsx';
 import Loader from '../components/Loader.jsx';
 import { useNavigate } from 'react-router-dom';
+import Button from '../components/Button.jsx';
 
 function Chat() {
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ function Chat() {
       })
 
       socketRef.on('reply', (payload) => {
+        setSending(false);
         setChats(prev => [...prev, payload]);
       });
       socketRef.on("download-file", (payload) => {
@@ -47,8 +49,8 @@ function Chat() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (message.trim()) {
-      if (file) {
         setSending(true)
+      if (file) {
         const formData = new FormData();
         formData.append("file", file);
         fetch(`http://localhost:3000/api/v1/session/upload-file`, {
@@ -156,12 +158,7 @@ function Chat() {
               <input type='file' className={"rounded-lg " + (file ? "bg-green-600 px-4 py-2" : "bg-blue-900 px-4 py-2")} onChange={e => setFile(e.target.files[0])}></input>
             </div>
 
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg transition"
-            >
-              Send
-            </button>
+            <Button text="Send" handleClick={handleSubmit}/>
           </form>
 
         </div>
