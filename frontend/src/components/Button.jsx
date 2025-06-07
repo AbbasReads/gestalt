@@ -22,7 +22,7 @@ const StyledWrapper = styled.div`
     font-weight: bold;
     color: white;
     background-color: #171717;
-    padding: 1em 2em;
+    padding: 0.5em 2em;
     border: none;
     border-radius: .6rem;
     position: relative;
