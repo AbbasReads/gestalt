@@ -14,11 +14,6 @@ const LandingPage = () => {
   }, []);
 
   const handleCreateSession = () => {
-    // if (!username.trim()) {
-    //   alert('Please enter a username.');
-    //   return;
-    // }
-    // localStorage.setItem("username",username);
     socketRef.emit('create-session');
   };
 

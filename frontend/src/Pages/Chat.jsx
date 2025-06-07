@@ -49,7 +49,7 @@ function Chat() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (message.trim()) {
-        setSending(true)
+      setSending(true)
       if (file) {
         const formData = new FormData();
         formData.append("file", file);
@@ -82,16 +82,29 @@ function Chat() {
       {!closed && <Prompt closeIt={() => setClosed(true)}></Prompt>}
       <div className="w-full max-w-6xl h-[90vh] flex border border-neutral-700 rounded-xl overflow-hidden">
         {/* Sidebar for Users */}
-        <div className="w-64 bg-neutral-800 border-r border-neutral-700 p-4 space-y-2 overflow-y-auto">
-          <h2 className="text-lg font-semibold mb-2">Users</h2>
-          {users.map((user, index) => (
-            <div
-              key={index}
-              className="px-3 py-2 bg-neutral-700 rounded-lg text-sm break-all"
-            >
-              {user}
+        <div className="w-64 bg-neutral-800 border-r border-neutral-700 p-4 flex flex-col justify-between overflow-y-auto">
+          <div>
+            <h2 className="text-lg font-semibold mb-2">Joined</h2>
+            {users.map((user, index) => (
+              <div
+                key={index}
+                className="px-3 py-2 bg-neutral-700 rounded-lg text-sm break-all mb-2"
+              >
+                {user}
+              </div>
+            ))}
+          </div>
+          <div className="pt-4 flex justify-center">
+            <div className="flex flex-col items-center space-y-2">
+              <label className="text-sm text-gray-400">Scan to join</label>
+              <img
+                src={`http://api.qrserver.com/v1/create-qr-code/?data=${document.URL}&size=150x150&margin=19`}
+                alt="QR Code"
+                className="rounded-lg"
+              />
             </div>
-          ))}
+          </div>
+
         </div>
 
         {/* Chat area */}
@@ -155,10 +168,23 @@ function Chat() {
 
             {/* Styled File Input */}
             <div className="relative">
-              <input type='file' className={"rounded-lg " + (file ? "bg-green-600 px-4 py-2" : "bg-blue-900 px-4 py-2")} onChange={e => setFile(e.target.files[0])}></input>
+              <label
+                htmlFor="file-upload"
+                className={`cursor-pointer rounded-lg px-4 py-2 transition-colors duration-200 ${file ? "bg-green-600 hover:bg-green-700" : "bg-blue-900 hover:bg-blue-800"
+                  } text-white text-sm`}
+              >
+                {file ? "File Selected" : "Attach File"}
+              </label>
+              <input
+                id="file-upload"
+                type="file"
+                className="hidden"
+                onChange={(e) => setFile(e.target.files[0])}
+              />
             </div>
 
-            <Button text="Send" handleClick={handleSubmit}/>
+
+            <Button text="Send" handleClick={handleSubmit} />
           </form>
 
         </div>
