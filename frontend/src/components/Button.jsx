@@ -37,7 +37,7 @@ const StyledWrapper = styled.div`
     transform: translate(-50%, -50%);
     height: 30px;
     width: 30px;
-    background-color: #0c66ed;
+    background-color: #193cb8;
     border-radius: 50%;
     transition: .6s ease;
   }
