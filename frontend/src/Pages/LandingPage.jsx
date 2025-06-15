@@ -40,10 +40,10 @@ const LandingPage = () => {
       {/* Gestalt Title */}
       <div className="text-center px-4">
         <ScrambledText
-          className="text-6xl font-bold text-white tracking-wide"
+          className="text-8xl  text-white font-patrick tracking-wide"
           radius={50}
-          duration={1.2}
-          speed={0.5}
+          duration={1}
+          speed={0.2}
           scrambleChars="~_"
         >
           Gestalt
@@ -51,8 +51,8 @@ const LandingPage = () => {
       </div>
 
       {/* Session Creation Box */}
-      <div className="w-full max-w-sm justify-items-center bg-neutral-800 rounded-xl p-6 shadow-lg">
-        <h1 className="text-white text-2xl font-semibold mb-6 text-center">
+      <div className="w-full max-w-80 justify-items-center bg-neutral-800 rounded-xl p-6 shadow-lg">
+        <h1 className="text-white text-4xl font-patrick mb-6 text-center">
           Create Chat Session
         </h1>
 
