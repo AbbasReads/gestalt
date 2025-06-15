@@ -6,6 +6,7 @@ import Loader from '../components/Loader.jsx';
 import Card from '../components/Card.jsx';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button.jsx';
+import { AnimatePresence} from 'motion/react';
 
 function Chat() {
   const navigate = useNavigate();
@@ -18,6 +19,7 @@ function Chat() {
   const [users, setusers] = useState([])
   const [closed, setClosed] = useState(true)
   const [sending, setSending] = useState(false);
+  const [showInfo, setshowInfo] = useState(false);
 
   useEffect(() => {
     if (!localStorage.getItem("username")) setClosed(false);
@@ -78,12 +80,21 @@ function Chat() {
     }
   };
 
+  const onshowInfo = () => {
+    setshowInfo(true);
+  }
+
   return (
     <div className="min-h-screen bg-neutral-900 text-white flex flex-col items-center justify-center px-2 py-2">
       {!closed && <Prompt closeIt={() => setClosed(true)}></Prompt>}
-      {/* <Card users={users} className="md:hidden"/> */}
-      <div className='flex w-full p-2'>
-        <div className="w-full max-w-6xl h-[90vh] flex border border-neutral-700 rounded-xl overflow-hidden">
+      <AnimatePresence>
+        {showInfo && <Card setshowInfo={setshowInfo} users={users} />}
+      </AnimatePresence>
+      <div className='flex h-6 w-full px-8 justify-end'>
+        {showInfo || <button className='md:hidden' onClick={onshowInfo}><img src="/assets/info.png" className='h-full' alt="Info" /></button>}
+      </div>
+      <div className='flex w-full p-2 justify-center '>
+        <div className="w-full max-w-7xl h-[90vh] flex border border-neutral-700 rounded-xl overflow-hidden">
           {/* Sidebar for Users */}
           <div className="hidden md:flex w-64 bg-neutral-800 border-r border-neutral-700 p-4 flex-col justify-between overflow-y-auto">
             <div>
@@ -176,7 +187,7 @@ function Chat() {
                   <div className="relative">
                     <label
                       htmlFor="file-upload"
-                      className={`cursor-pointer rounded-lg px-4 py-2 transition-colors duration-200 
+                      className={`cursor-pointer rounded-lg px-4 py-3 transition-colors duration-200 
           ${file ? "bg-green-600 hover:bg-green-700" : "bg-blue-900 hover:bg-blue-800"} 
           text-white text-sm ${sending ? "opacity-60 cursor-not-allowed" : ""}`}
                     >
