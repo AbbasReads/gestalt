@@ -61,7 +61,6 @@ connectDB()
         );
 
         const publicId = payload.fileLink.split("/").at(-1);
-        sessionUsers[payload.slug].files.push(publicId);
 
         io.to(payload.slug).emit("download-file", {
           sentBy: payload.username,
@@ -76,7 +75,6 @@ connectDB()
             sessionUsers[response.sessionId] = {
               passcode: response.passcode,
               usernames: [],
-              files: []
             };
             socket.emit("chatpage", {
               sessionId: response.sessionId,

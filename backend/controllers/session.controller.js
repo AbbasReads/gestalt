@@ -2,13 +2,12 @@ import { nanoid } from "nanoid"
 import {apiResponse} from '../utils/apiResponse.util.js'
 import { asyncHandler } from "../utils/asyncHandler.util.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.util.js";
-import {apiError} from '../utils/apiError.util.js'
 import { Session } from "../models/session.model.js";
 
 const createSession = async () => {
   const sessionId = nanoid(10);
   const passcode = nanoid(4);
-  const sessionURL = `http://localhost:5173/session/${sessionId}/${passcode}`;
+  const sessionURL = `${process.env.FRONTEND_URL}/session/${sessionId}/${passcode}`;
   await Session.create({ sessionId }); 
   return { sessionId, sessionURL, passcode };
 }
