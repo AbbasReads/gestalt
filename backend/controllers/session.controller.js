@@ -5,17 +5,13 @@ import { uploadOnCloudinary } from "../utils/cloudinary.util.js";
 import {apiError} from '../utils/apiError.util.js'
 import { Session } from "../models/session.model.js";
 
-const createSession = asyncHandler(async (req, res) => {
+const createSession = async () => {
   const sessionId = nanoid(10);
   const passcode = nanoid(4);
-  const sessionURL = `${req.protocol}://${req.get('host')}/session/${sessionId}/${passcode}`;
-
-  const doc=await Session.create({ sessionId }); 
-  console.log(doc) // Wait for DB insert
-  return res.status(200).json(
-    new apiResponse(200, { sessionId, sessionURL, passcode }, "Id generated.")
-  );
-});
+  const sessionURL = `http://localhost:5173/session/${sessionId}/${passcode}`;
+  await Session.create({ sessionId }); 
+  return { sessionId, sessionURL, passcode };
+}
 
 const uploadFile=asyncHandler(async(req,res)=>{
     // console.log(process.env.CLOUDINARY_API_SECRET,process.env.CLOUDINARY_API_KEY)
