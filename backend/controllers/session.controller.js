@@ -16,7 +16,8 @@ const createSession = async () => {
 const uploadFile=asyncHandler(async(req,res)=>{
     // console.log(process.env.CLOUDINARY_API_SECRET,process.env.CLOUDINARY_API_KEY)
     const localFilePath=req.file?.path;
-    const uploadedLink=await uploadOnCloudinary(localFilePath)
+    console.log(req);
+    const uploadedLink=await uploadOnCloudinary(localFilePath,req.body.sessionId)
     if(!uploadedLink)
         return res.status(402).json(
             new apiResponse(402,{},"File upload failed")
