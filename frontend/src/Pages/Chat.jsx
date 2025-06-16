@@ -6,8 +6,8 @@ import Loader from '../components/Loader.jsx';
 import Card from '../components/Card.jsx';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button.jsx';
-import { AnimatePresence} from 'motion/react';
-import {enqueueSnackbar } from 'notistack';
+import { AnimatePresence } from 'motion/react';
+import { enqueueSnackbar } from 'notistack';
 
 function Chat() {
   const navigate = useNavigate();
@@ -52,33 +52,35 @@ function Chat() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (message.trim()) {
-      setSending(true)
-      if (file) {
-        const formData = new FormData();
-        formData.append("file", file);
-        formData.append("sessionId", slug);
-        fetch(`http://localhost:3000/api/v1/session/upload-file`, {
-          method: "POST",
-          body: formData   //to be looked into
+    setSending(true)
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("sessionId", slug);
+      fetch(`http://localhost:3000/api/v1/session/upload-file`, {
+        method: "POST",
+        body: formData   //to be looked into
 
-        }).then(response => response.json())
-          .then(response => {
-            if (response.statusCode == 402) {
-              enqueueSnackbar(response.message ,{variant:'error'})
-            }
-            else {
-              const fileLink = response.data;
-              socketRef.emit("file", { slug, username, fileLink, message })
-            }
-            setSending(false);
-          });
-      }
-      else {
+      }).then(response => response.json())
+        .then(response => {
+          if (response.statusCode == 402) {
+            enqueueSnackbar(response.message, { variant: 'error' })
+          }
+          else {
+            const fileLink = response.data;
+            socketRef.emit("file", { slug, username, fileLink, message })
+          }
+          setSending(false);
+          setFile("");
+          setMessage('');
+        });
+    }
+    else {
+      if (message.trim()) {
         socketRef.emit('message', { slug, username, message });
+        setMessage('');
+        setFile("");
       }
-      setMessage('');
-      setFile("");
     }
   };
 
@@ -88,7 +90,6 @@ function Chat() {
 
   return (
     <div className="min-h-screen bg-neutral-900 text-white flex flex-col items-center justify-center px-2 py-2">
-      <button onClick={() => enqueueSnackbar('That was easy!',{variant:'error'})}>Show snackbar</button>
       {!closed && <Prompt closeIt={() => setClosed(true)}></Prompt>}
       <AnimatePresence>
         {showInfo && <Card setshowInfo={setshowInfo} users={users} />}

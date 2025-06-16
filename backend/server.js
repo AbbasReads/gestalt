@@ -2,8 +2,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { app } from "./app.js";
 import dotenv from "dotenv";
-import { deleteFile, deleteFolder } from "./utils/cloudinary.util.js";
-import { nanoid } from "nanoid";
+import { deleteFolder } from "./utils/cloudinary.util.js";
 import connectDB from "./db/index.js";
 import { Session } from "./models/session.model.js";
 import { createSession } from "./controllers/session.controller.js";
@@ -118,10 +117,6 @@ connectDB()
           if (sessionUsers[sessionId].usernames.length > 0) {
             io.to(sessionId).emit("users", sessionUsers[sessionId].usernames);
           } else {
-            // sessionUsers[sessionId]?.files?.forEach(async (element) => {
-            //   await deleteFile(element);
-            // });
-
             await deleteFolder(sessionId);
 
             Session.findOneAndDelete({ sessionId }).catch(err=>{
