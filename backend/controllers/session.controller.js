@@ -17,18 +17,12 @@ const uploadFile=asyncHandler(async(req,res)=>{
     // console.log(process.env.CLOUDINARY_API_SECRET,process.env.CLOUDINARY_API_KEY)
     const localFilePath=req.file?.path;
     const uploadedLink=await uploadOnCloudinary(localFilePath,req.body.sessionId)
-    const uploadedLink=await uploadOnCloudinary(localFilePath,req.body.sessionId)
     if(!uploadedLink)
         return res.status(402).json(
             new apiResponse(402,{},"File upload failed")
     ) 
     const downloadLink=uploadedLink.secure_url.replace("upload/","upload/fl_attachment/")
-        return res.status(402).json(
-            new apiResponse(402,{},"File upload failed")
-    ) 
-    const downloadLink=uploadedLink.secure_url.replace("upload/","upload/fl_attachment/")
     return res.status(202).json(
-        new apiResponse(202,downloadLink,"File link generated successfully.")
         new apiResponse(202,downloadLink,"File link generated successfully.")
     )
 })

@@ -9,25 +9,14 @@ import { createSession } from "./controllers/session.controller.js";
 
 dotenv.config({ path: './.env' });
 
-import { deleteFolder } from "./utils/cloudinary.util.js";
-import connectDB from "./db/index.js";
-import { Session } from "./models/session.model.js";
-import { createSession } from "./controllers/session.controller.js";
-
-dotenv.config({ path: './.env' });
-
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
     origin: '*'
   }
 });
-  cors: {
-    origin: '*'
-  }
-});
 
-const sessionUsers = {}; // Key: sessionId, Value: usernames, passcode, files
+
 const sessionUsers = {}; // Key: sessionId, Value: usernames, passcode, files
 
 connectDB()
