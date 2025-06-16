@@ -1,6 +1,7 @@
 import { v2 as cloudinary } from 'cloudinary';
 import fs from 'fs'
-
+import dotenv from "dotenv"
+dotenv.config();
 
 const extensionToResourceType = {
     jpg: 'image', jpeg: 'image', png: 'image', gif: 'image', webp: 'image', bmp: 'image', tiff: 'image', svg: 'image',
@@ -9,22 +10,20 @@ const extensionToResourceType = {
 };
 
 // Configuration
-// cloudinary.config({
-//     api_key: process.env.CLOUDINARY_API_KEY,
-//     api_secret: process.env.CLOUDINARY_API_SECRET,
-//     cloud_name: process.env.CLOUDINARY_CLOUD_NAME
-// });
+cloudinary.config({
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME
+});
 
-const uploadOnCloudinary = async (localFilePath) => {
+const uploadOnCloudinary = async (localFilePath, sessionId) => {
     if (!localFilePath) return null;
     try {
         const response = await cloudinary.uploader
             .upload(
                 localFilePath, {
+                folder: sessionId,
                 resource_type: 'auto',
-                api_key: process.env.CLOUDINARY_API_KEY,
-                api_secret: process.env.CLOUDINARY_API_SECRET,
-                cloud_name: process.env.CLOUDINARY_CLOUD_NAME
             }
             )
         // console.log('File uploaded successfully, ',response.url)
@@ -43,22 +42,23 @@ const deleteFile = async (publicId) => {
     const resourceType = extensionToResourceType[ext] || 'image';
     console.log(resourceType);
     cloudinary.uploader
-    .destroy(
-        publicId.split(".")[0],
-        {
-            resource_type: resourceType,
-            api_key: process.env.CLOUDINARY_API_KEY,
-            api_secret: process.env.CLOUDINARY_API_SECRET,
-            cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-            invalidate:true
-            
-        }
-    ).then(response => {
-        console.log(response);
-    })
+        .destroy(
+            publicId.split(".")[0],
+            {
+                resource_type: resourceType,
+                invalidate: true
+            }
+        ).then(response => {
+            console.log(response);
+        })
         .catch(error => {
             console.log(error);
         })
 }
+const deleteFolder=async(sessionId)=>{
+    cloudinary.api.delete_resources_by_prefix(sessionId+"/")
+    .catch(err=> console.log(err))
+    
+}
 
-export { uploadOnCloudinary, deleteFile }
+export { uploadOnCloudinary, deleteFile,deleteFolder }

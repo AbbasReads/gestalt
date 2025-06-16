@@ -57,6 +57,7 @@ function Chat() {
       if (file) {
         const formData = new FormData();
         formData.append("file", file);
+        formData.append("sessionId", slug);
         fetch(`http://localhost:3000/api/v1/session/upload-file`, {
           method: "POST",
           body: formData   //to be looked into
