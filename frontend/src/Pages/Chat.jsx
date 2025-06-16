@@ -7,6 +7,7 @@ import Card from '../components/Card.jsx';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button.jsx';
 import { AnimatePresence} from 'motion/react';
+import {enqueueSnackbar } from 'notistack';
 
 function Chat() {
   const navigate = useNavigate();
@@ -63,7 +64,7 @@ function Chat() {
         }).then(response => response.json())
           .then(response => {
             if (response.statusCode == 402) {
-              socketRef.emit('message', { slug, username, message: response.message })
+              enqueueSnackbar(response.message ,{variant:'error'})
             }
             else {
               const fileLink = response.data;
@@ -86,6 +87,7 @@ function Chat() {
 
   return (
     <div className="min-h-screen bg-neutral-900 text-white flex flex-col items-center justify-center px-2 py-2">
+      <button onClick={() => enqueueSnackbar('That was easy!',{variant:'error'})}>Show snackbar</button>
       {!closed && <Prompt closeIt={() => setClosed(true)}></Prompt>}
       <AnimatePresence>
         {showInfo && <Card setshowInfo={setshowInfo} users={users} />}

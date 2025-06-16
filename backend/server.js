@@ -6,6 +6,7 @@ import { deleteFile } from "./utils/cloudinary.util.js";
 import { nanoid } from "nanoid";
 import connectDB from "./db/index.js";
 import { Session } from "./models/session.model.js";
+import { createSession } from "./controllers/session.controller.js";
 
 dotenv.config({ path: './.env' });
 
@@ -71,19 +72,16 @@ connectDB()
       });
 
       socket.on("create-session", () => {
-        fetch(`http://localhost:${process.env.PORT}/api/v1/session/create-session`, {
-          method: "POST",
-        })
-          .then((response) => response.json())
+        createSession()
           .then((response) => {
-            sessionUsers[response.data.sessionId] = {
-              passcode: response.data.passcode,
+            sessionUsers[response.sessionId] = {
+              passcode: response.passcode,
               usernames: [],
               files: []
             };
             socket.emit("chatpage", {
-              sessionId: response.data.sessionId,
-              passcode: response.data.passcode
+              sessionId: response.sessionId,
+              passcode: response.passcode
             });
           })
           .catch(err => {

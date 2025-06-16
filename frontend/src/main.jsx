@@ -6,6 +6,7 @@ import Chat from "./Pages/Chat";
 import "./index.css";
 import { io } from "socket.io-client";
 import Unauthorised from "./Pages/Unauthorised";
+import { SnackbarProvider } from "notistack";
 
 // Create socket context
 export const SocketContext = createContext();
@@ -20,12 +21,14 @@ const root = document.getElementById("root");
 ReactDOM.createRoot(root).render(
   <SocketContext.Provider value={socket}>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/session/:slug/:passcode" element={<Chat />} />
-        <Route path="/error" element={<Unauthorised/>}></Route>
-        <Route path="/session/:slug" element={<Unauthorised/>}></Route>
-      </Routes>
+      <SnackbarProvider autoHideDuration={4000}>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/session/:slug/:passcode" element={<Chat />} />
+          <Route path="/error" element={<Unauthorised />}></Route>
+          <Route path="/session/:slug" element={<Unauthorised />}></Route>
+        </Routes>
+      </SnackbarProvider>
     </BrowserRouter>
   </SocketContext.Provider>
 );
