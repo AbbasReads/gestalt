@@ -7,9 +7,8 @@ import { Session } from "../models/session.model.js";
 const createSession = async () => {
   const sessionId = nanoid(10);
   const passcode = nanoid(4);
-  const sessionURL = `${process.env.FRONTEND_URL}/session/${sessionId}/${passcode}`;
   await Session.create({ sessionId }); 
-  return { sessionId, sessionURL, passcode };
+  return { sessionId, passcode };
 }
 
 
