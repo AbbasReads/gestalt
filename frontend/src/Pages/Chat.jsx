@@ -89,7 +89,7 @@ function Chat() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-900 text-white flex flex-col items-center justify-center px-2 py-2">
+    <div className="h-[100dvh] bg-neutral-900 text-white flex flex-col items-center justify-center px-2 py-2">
       {!closed && <Prompt closeIt={() => setClosed(true)}></Prompt>}
       <AnimatePresence>
         {showInfo && <Card setshowInfo={setshowInfo} users={users} />}
