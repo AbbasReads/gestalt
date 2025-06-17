@@ -6,7 +6,7 @@ const Card = ({ users, setshowInfo }) => {
       <div className="flex w-64 absolute top-2 right-3 rounded-xl bg-neutral-800 border border-blue-800 p-4 flex-col justify-between overflow-y-auto">
 
         <div className='justify-end w-full flex'>
-          <button onClick={() => setshowInfo(false)}>X</button>
+          <button onClick={() => setshowInfo(false)} className='font-patrick relative right-5'>X</button>
         </div>
         <div>
           <h2 className="text-lg font-semibold mb-2">Joined</h2>
