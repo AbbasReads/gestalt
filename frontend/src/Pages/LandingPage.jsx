@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { SocketContext } from '../main.jsx';
 import Button from '../components/Button.jsx';
 import ScrambledText from '../components/ScrambledText.jsx';
+import { enqueueSnackbar, closeSnackbar } from 'notistack';
+
 
 const LandingPage = () => {
   const [username, setUsername] = useState('');
@@ -14,8 +16,11 @@ const LandingPage = () => {
       navigate(`/session/${payload.sessionId}/${payload.passcode}`);
     };
 
-    socketRef.on('chatpage', handleChatPage);
-
+    socketRef.on('chatpage', (payload) => {
+      closeSnackbar();
+      handleChatPage(payload);
+    });
+    closeSnackbar();
     return () => {
       socketRef.off('chatpage', handleChatPage);
     };
@@ -29,14 +34,14 @@ const LandingPage = () => {
       alert("Please enter a username.");
       return;
     }
-
+    enqueueSnackbar("Joining...", { variant: 'info',persist:true })
     localStorage.setItem('username', nameToStore);
     socketRef.emit('create-session');
   };
 
   return (
     <div className="min-h-screen bg-neutral-900 flex flex-col items-center justify-center px-4 space-y-8">
-      
+
       {/* Gestalt Title */}
       <div className="text-center px-4">
         <ScrambledText
