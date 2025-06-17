@@ -7,6 +7,7 @@ import Card from '../components/Card.jsx';
 import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button.jsx';
 import { AnimatePresence } from 'motion/react';
+import { BACKEND_URL } from '../../info.js';
 import { enqueueSnackbar } from 'notistack';
 
 function Chat() {
@@ -25,7 +26,6 @@ function Chat() {
   useEffect(() => {
     if (!localStorage.getItem("username")) setClosed(false);
     else {
-      // socketRef.current = io('http://localhost:3000');
       socketRef.emit('join-user', { slug, passcode, username });
       socketRef.on('joined', ({ messages }) => {
         setChats(messages);
@@ -57,7 +57,7 @@ function Chat() {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("sessionId", slug);
-      fetch(`http://localhost:3000/api/v1/session/upload-file`, {
+      fetch(`${BACKEND_URL}/api/v1/session/upload-file`, {
         method: "POST",
         body: formData   //to be looked into
 

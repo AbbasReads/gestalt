@@ -13,6 +13,7 @@
     "@tabler/icons-react": "^3.34.0",
     "@tailwindcss/vite": "^4.1.7",
     "clsx": "^2.1.1",
+    "dotenv": "^16.5.0",
     "gsap": "^3.13.0",
     "motion": "^12.18.1",
     "nanoid": "^5.1.5",

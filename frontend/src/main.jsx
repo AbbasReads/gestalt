@@ -1,4 +1,4 @@
-import React, { createContext } from "react";
+import { createContext } from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "./Pages/LandingPage";
@@ -7,13 +7,13 @@ import "./index.css";
 import { io } from "socket.io-client";
 import Unauthorised from "./Pages/Unauthorised";
 import { SnackbarProvider } from "notistack";
-
+import { BACKEND_URL } from "../info";
 
 // Create socket context
 export const SocketContext = createContext();
 
 // Create socket instance
-const socket = io(`http://localhost:3000/`)
+const socket = io(BACKEND_URL)
 
 // Get root element
 const root = document.getElementById("root");
