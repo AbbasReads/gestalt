@@ -34,13 +34,13 @@ const LandingPage = () => {
       alert("Please enter a username.");
       return;
     }
-    enqueueSnackbar("Joining...", { variant: 'info',persist:true })
+    enqueueSnackbar("Joining...", { variant: 'info', persist: true })
     localStorage.setItem('username', nameToStore);
     socketRef.emit('create-session');
   };
 
   return (
-    <div className="min-h-screen bg-neutral-900 flex flex-col items-center justify-center px-4 space-y-8">
+    <div className="h-[100dvh] bg-neutral-900 flex flex-col items-center justify-center px-4 space-y-8 overflow-hidden">
 
       {/* Gestalt Title */}
       <div className="text-center px-4">
