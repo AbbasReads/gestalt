@@ -40,7 +40,7 @@ const LandingPage = () => {
   };
 
   return (
-    <div className="h-[100dvh] bg-neutral-900 flex flex-col items-center justify-center px-4 space-y-8">
+    <div className="min-h-screen bg-neutral-900 flex flex-col items-center justify-center px-4 space-y-8">
 
       {/* Gestalt Title */}
       <div className="text-center px-4">
