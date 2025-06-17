@@ -131,7 +131,7 @@ function Chat() {
                 if (!chat.file) return (
                   <div
                     key={i}
-                    className={`max-w-xs px-4 py-2 rounded-lg break-words ${chat.sentBy === username
+                    className={`md:max-w-xs w-5/6 px-4 py-2 rounded-lg break-words ${chat.sentBy === username
                       ? 'ml-auto bg-blue-600'
                       : 'mr-auto bg-neutral-700'
                       }`}
@@ -143,7 +143,7 @@ function Chat() {
                 else return (
                   <div
                     key={i}
-                    className={`max-w-xs px-4 py-2 rounded-lg break-words ${chat.sentBy === username
+                    className={`md:max-w-xs w-5/6 px-4 py-2 rounded-lg break-words ${chat.sentBy === username
                       ? 'ml-auto bg-blue-600'
                       : 'mr-auto bg-neutral-700'
                       }`}
