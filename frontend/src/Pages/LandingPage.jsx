@@ -7,6 +7,7 @@ import { enqueueSnackbar, closeSnackbar } from 'notistack';
 
 
 const LandingPage = () => {
+  const [connected, setConnected] = useState(false)
   const [username, setUsername] = useState('');
   const navigate = useNavigate();
   const socketRef = useContext(SocketContext);
@@ -15,7 +16,11 @@ const LandingPage = () => {
     const handleChatPage = (payload) => {
       navigate(`/session/${payload.sessionId}/${payload.passcode}`);
     };
-
+    enqueueSnackbar("Connecting...", { variant: 'info', persist: true })
+    socketRef.on('connected', () => { 
+      closeSnackbar()
+      setConnected(true)
+     })
     socketRef.on('chatpage', (payload) => {
       closeSnackbar();
       handleChatPage(payload);
@@ -34,7 +39,7 @@ const LandingPage = () => {
       alert("Please enter a username.");
       return;
     }
-    enqueueSnackbar("Joining...", { variant: 'info',persist:true })
+    enqueueSnackbar("Joining...", { variant: 'info', persist: true })
     localStorage.setItem('username', nameToStore);
     socketRef.emit('create-session');
   };
@@ -70,10 +75,8 @@ const LandingPage = () => {
             onChange={(e) => setUsername(e.target.value)}
           />
         )}
-
-        <Button text="GO" handleClick={handleCreateSession} />
+        {connected && <Button text="GO" handleClick={handleCreateSession} />}
       </div>
-
     </div>
   );
 };

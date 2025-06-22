@@ -23,7 +23,7 @@ connectDB()
   .then(() => {
     io.on("connection", (socket) => {
       console.log("connection established");
-
+      socket.emit('connected');
       socket.on("message", async (payload) => {
         const { slug, message, username } = payload;
 
