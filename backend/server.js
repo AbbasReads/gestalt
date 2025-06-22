@@ -102,12 +102,13 @@ connectDB()
           const session = await Session.findOne({ sessionId: slug })
           socket.emit('joined', { messages: session.messages })
           io.to(slug).emit("users", sessionUsers[slug].usernames);
+          io.to(slug).emit("new-entry", username);
         }
       });
 
       socket.on("disconnect", async () => {
         const { sessionId, username } = socket;
-
+        io.to(sessionId).emit("left",username);
         if (sessionId && sessionUsers[sessionId]?.usernames) {
           sessionUsers[sessionId].usernames = sessionUsers[sessionId].usernames.filter(
             (u) => u !== username

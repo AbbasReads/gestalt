@@ -1,5 +1,5 @@
-import { useState, useEffect, useContext, useRef } from 'react';
-import { SocketContext } from '../main.jsx';
+import { useState, useEffect, useContext } from 'react';
+import { SocketContext } from '../context/SocketProvider.jsx'
 import { useParams } from 'react-router-dom';
 import Prompt from '../components/Prompt.jsx';
 import Loader from '../components/Loader.jsx';
@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../components/Button.jsx';
 import { AnimatePresence } from 'motion/react';
 import { BACKEND_URL } from '../../info.js';
-import { enqueueSnackbar } from 'notistack';
+import { enqueueSnackbar, closeSnackbar } from 'notistack';
 
 function Chat() {
   const navigate = useNavigate();
@@ -17,7 +17,7 @@ function Chat() {
   const username = localStorage.getItem("username")
   const [file, setFile] = useState("")
   const { slug, passcode } = useParams();
-  const socketRef = useContext(SocketContext);
+  const { socket, connected } = useContext(SocketContext);
   const [users, setusers] = useState([])
   const [closed, setClosed] = useState(true)
   const [sending, setSending] = useState(false);
@@ -26,27 +26,33 @@ function Chat() {
   useEffect(() => {
     if (!localStorage.getItem("username")) setClosed(false);
     else {
-      socketRef.emit('join-user', { slug, passcode, username });
-      socketRef.on('joined', ({ messages }) => {
-        enqueueSnackbar(`${username} joined`, { variant: 'success'})
+      socket.emit('join-user', { slug, passcode, username });
+      socket.on('joined', ({ messages }) => {
         setChats(messages);
       })
-      socketRef.on("unauthorised", () => {
+      socket.on('left',username=>{
+                enqueueSnackbar(`${username} left...`, { variant: 'error'})
+      })
+      socket.on('new-entry', (username) => {
+        enqueueSnackbar(`${username} joined...`, { variant: 'success'})
+      })
+
+      socket.on("unauthorised", () => {
         navigate('/error');
       })
 
-      socketRef.on('reply', (payload) => {
+      socket.on('reply', (payload) => {
         setSending(false);
         setChats(prev => [...prev, payload]);
       });
-      socketRef.on("download-file", (payload) => {
+      socket.on("download-file", (payload) => {
         setChats(prev => [...prev, payload]);
       })
-      socketRef.on('users', (users) => {
+      socket.on('users', (users) => {
         setusers(users);
       })
       return () => {
-        socketRef.disconnect();
+        socket.disconnect();
       };
     }
   }, [slug, closed]);
@@ -65,11 +71,11 @@ function Chat() {
       }).then(response => response.json())
         .then(response => {
           if (response.statusCode == 402) {
-            enqueueSnackbar(response.message, { variant: 'error',style:'background color:red' })
+            enqueueSnackbar(response.message, { variant: 'warning', style: 'background color:red' })
           }
           else {
             const fileLink = response.data;
-            socketRef.emit("file", { slug, username, fileLink, message })
+            socket.emit("file", { slug, username, fileLink, message })
           }
           setSending(false);
           setFile("");
@@ -78,7 +84,7 @@ function Chat() {
     }
     else {
       if (message.trim()) {
-        socketRef.emit('message', { slug, username, message });
+        socket.emit('message', { slug, username, message });
         setMessage('');
         setFile("");
       }

@@ -1,35 +1,30 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { SocketContext } from '../main.jsx';
+import {SocketContext} from '../context/SocketProvider.jsx'
 import Button from '../components/Button.jsx';
 import ScrambledText from '../components/ScrambledText.jsx';
 import { enqueueSnackbar, closeSnackbar } from 'notistack';
 import Loader from '../components/Loader.jsx';
 
 const LandingPage = () => {
-  const [connected, setConnected] = useState(false)
-  const [username, setUsername] = useState(localStorage.getItem("username")||"");
+  const [username, setUsername] = useState(localStorage.getItem("username") || "");
   const navigate = useNavigate();
-  const socketRef = useContext(SocketContext);
+  const { socket, connected } = useContext(SocketContext);
 
   useEffect(() => {
     const handleChatPage = (payload) => {
       navigate(`/session/${payload.sessionId}/${payload.passcode}`);
     };
-    enqueueSnackbar("Connecting...", { variant: 'info', persist: true })
-    socketRef.on('connected', () => { 
-      closeSnackbar()
-      setConnected(true)
-     })
-    socketRef.on('chatpage', (payload) => {
+
+    socket.on('chatpage', (payload) => {
       closeSnackbar();
       handleChatPage(payload);
     });
     closeSnackbar();
     return () => {
-      socketRef.off('chatpage', handleChatPage);
+      socket.off('chatpage', handleChatPage);
     };
-  }, [navigate, socketRef]);
+  }, [navigate, socket]);
 
   const handleCreateSession = () => {
     const savedUsername = localStorage.getItem('username');
@@ -41,7 +36,7 @@ const LandingPage = () => {
     }
     enqueueSnackbar("Joining...", { variant: 'info', persist: true })
     localStorage.setItem('username', nameToStore);
-    socketRef.emit('create-session');
+    socket.emit('create-session');
   };
 
   return (
@@ -61,20 +56,20 @@ const LandingPage = () => {
       </div>
 
       {/* Session Creation Box */}
-      {(connected)?<div className="w-full max-w-80 justify-items-center bg-neutral-800 rounded-xl p-6 shadow-lg">
+      {(connected) ? <div className="w-full max-w-80 justify-items-center bg-neutral-800 rounded-xl p-6 shadow-lg">
         <h1 className="text-white text-4xl font-patrick mb-6 text-center">
           Create Chat Session
         </h1>
 
-          <input
-            type="text"
-            placeholder="Enter your username"
-            className="w-full mb-4 px-4 py-2 rounded-lg bg-neutral-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-          />
+        <input
+          type="text"
+          placeholder="Enter your username"
+          className="w-full mb-4 px-4 py-2 rounded-lg bg-neutral-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
         <Button text="GO" handleClick={handleCreateSession} />
-      </div>:<Loader/>}
+      </div> : <Loader />}
     </div>
   );
 };
