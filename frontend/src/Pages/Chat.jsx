@@ -28,6 +28,7 @@ function Chat() {
     else {
       socketRef.emit('join-user', { slug, passcode, username });
       socketRef.on('joined', ({ messages }) => {
+        enqueueSnackbar(`${username} joined`, { variant: 'success'})
         setChats(messages);
       })
       socketRef.on("unauthorised", () => {
@@ -64,7 +65,7 @@ function Chat() {
       }).then(response => response.json())
         .then(response => {
           if (response.statusCode == 402) {
-            enqueueSnackbar(response.message, { variant: 'error' })
+            enqueueSnackbar(response.message, { variant: 'error',style:'background color:red' })
           }
           else {
             const fileLink = response.data;
