@@ -215,7 +215,7 @@ function Chat() {
 
                   {/* Send Button */}
                   <Button
-                    disabled={sending}
+                    disabled={sending||!connected}
                     text="Send"
                     handleClick={handleSubmit}
                   />

@@ -26,7 +26,11 @@ connectDB()
       socket.emit('connected');
       socket.on("message", async (payload) => {
         const { slug, message, username } = payload;
-
+        io.to(slug).emit("reply", {
+          sentBy: username,
+          text: message,
+          file: ''
+        });
         await Session.findOneAndUpdate(
           { sessionId: slug },
           {
@@ -39,12 +43,6 @@ connectDB()
             }
           }
         );
-
-        io.to(slug).emit("reply", {
-          sentBy: username,
-          text: message,
-          file: ''
-        });
       });
 
       socket.on("file", async (payload) => {
