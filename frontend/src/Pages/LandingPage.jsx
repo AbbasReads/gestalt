@@ -1,14 +1,14 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SocketContext } from '../main.jsx';
 import Button from '../components/Button.jsx';
 import ScrambledText from '../components/ScrambledText.jsx';
 import { enqueueSnackbar, closeSnackbar } from 'notistack';
-
+import Loader from '../components/Loader.jsx';
 
 const LandingPage = () => {
   const [connected, setConnected] = useState(false)
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(localStorage.getItem("username")||"");
   const navigate = useNavigate();
   const socketRef = useContext(SocketContext);
 
@@ -61,12 +61,11 @@ const LandingPage = () => {
       </div>
 
       {/* Session Creation Box */}
-      <div className="w-full max-w-80 justify-items-center bg-neutral-800 rounded-xl p-6 shadow-lg">
+      {(connected)?<div className="w-full max-w-80 justify-items-center bg-neutral-800 rounded-xl p-6 shadow-lg">
         <h1 className="text-white text-4xl font-patrick mb-6 text-center">
           Create Chat Session
         </h1>
 
-        {!localStorage.getItem("username") && (
           <input
             type="text"
             placeholder="Enter your username"
@@ -74,9 +73,8 @@ const LandingPage = () => {
             value={username}
             onChange={(e) => setUsername(e.target.value)}
           />
-        )}
-        {connected && <Button text="GO" handleClick={handleCreateSession} />}
-      </div>
+        <Button text="GO" handleClick={handleCreateSession} />
+      </div>:<Loader/>}
     </div>
   );
 };
