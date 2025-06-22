@@ -99,7 +99,7 @@ connectDB()
           sessionUsers[slug].usernames.push(username);
           const session = await Session.findOne({ sessionId: slug })
           socket.emit('joined', { messages: session.messages })
-          // io.to(slug).emit("users", sessionUsers[slug].usernames);
+          io.to(slug).emit("users", sessionUsers[slug].usernames);
           io.to(slug).emit("new-entry", username);
         }
       });
