@@ -59,8 +59,7 @@ connectDB()
           }
         );
 
-        const publicId = payload.fileLink.split("/").at(-1);
-
+        sessionUsers[payload.slug].files = true;
         io.to(payload.slug).emit("download-file", {
           sentBy: payload.username,
           file: payload.fileLink,
@@ -74,6 +73,7 @@ connectDB()
             sessionUsers[response.sessionId] = {
               passcode: response.passcode,
               usernames: [],
+              files: false
             };
             socket.emit("chatpage", {
               sessionId: response.sessionId,
@@ -99,14 +99,14 @@ connectDB()
           sessionUsers[slug].usernames.push(username);
           const session = await Session.findOne({ sessionId: slug })
           socket.emit('joined', { messages: session.messages })
-          io.to(slug).emit("users", sessionUsers[slug].usernames);
+          // io.to(slug).emit("users", sessionUsers[slug].usernames);
           io.to(slug).emit("new-entry", username);
         }
       });
 
       socket.on("disconnect", async () => {
         const { sessionId, username } = socket;
-        io.to(sessionId).emit("left",username);
+        io.to(sessionId).emit("left", username);
         if (sessionId && sessionUsers[sessionId]?.usernames) {
           sessionUsers[sessionId].usernames = sessionUsers[sessionId].usernames.filter(
             (u) => u !== username
@@ -115,9 +115,11 @@ connectDB()
           if (sessionUsers[sessionId].usernames.length > 0) {
             io.to(sessionId).emit("users", sessionUsers[sessionId].usernames);
           } else {
-            await deleteFolder(sessionId);
+            if (sessionUsers[sessionId].files) {
+              await deleteFolder(sessionId);
+            }
 
-            Session.findOneAndDelete({ sessionId }).catch(err=>{
+            Session.findOneAndDelete({ sessionId }).catch(err => {
               console.log(err)
             })
             delete sessionUsers[sessionId];

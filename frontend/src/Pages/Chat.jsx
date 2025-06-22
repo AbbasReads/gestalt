@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { SocketContext } from '../context/SocketProvider.jsx'
 import { useParams } from 'react-router-dom';
 import Prompt from '../components/Prompt.jsx';
@@ -22,6 +22,7 @@ function Chat() {
   const [closed, setClosed] = useState(true)
   const [sending, setSending] = useState(false);
   const [showInfo, setshowInfo] = useState(false);
+  const lastMsgRef = useRef(null);
 
   useEffect(() => {
     if (!localStorage.getItem("username")) setClosed(false);
@@ -30,11 +31,11 @@ function Chat() {
       socket.on('joined', ({ messages }) => {
         setChats(messages);
       })
-      socket.on('left',username=>{
-                enqueueSnackbar(`${username} left...`, { variant: 'error'})
+      socket.on('left', username => {
+        enqueueSnackbar(`${username} left...`, { variant: 'error' })
       })
       socket.on('new-entry', (username) => {
-        enqueueSnackbar(`${username} joined...`, { variant: 'success'})
+        enqueueSnackbar(`${username} joined...`, { variant: 'success' })
       })
 
       socket.on("unauthorised", () => {
@@ -56,6 +57,11 @@ function Chat() {
       };
     }
   }, [slug, closed]);
+  useEffect(() => {
+    // console.log(lastMsgRef);
+    if (lastMsgRef.current)
+      lastMsgRef.current.scrollIntoView({ behavior: 'smooth' });
+  }, [chats])
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -138,6 +144,7 @@ function Chat() {
                 if (!chat.file) return (
                   <div
                     key={i}
+                    ref={(i == chats.length - 1) ? lastMsgRef : null}
                     className={`md:max-w-xs w-5/6 px-4 py-2 rounded-lg break-words ${chat.sentBy === username
                       ? 'ml-auto bg-blue-600'
                       : 'mr-auto bg-neutral-700'
@@ -150,6 +157,7 @@ function Chat() {
                 else return (
                   <div
                     key={i}
+                    ref={(i == chats.length - 1) ? lastMsgRef : null}
                     className={`md:max-w-xs w-5/6 px-4 py-2 rounded-lg break-words ${chat.sentBy === username
                       ? 'ml-auto bg-blue-600'
                       : 'mr-auto bg-neutral-700'
@@ -215,7 +223,7 @@ function Chat() {
 
                   {/* Send Button */}
                   <Button
-                    disabled={sending||!connected}
+                    disabled={sending || !connected}
                     text="Send"
                     handleClick={handleSubmit}
                   />
