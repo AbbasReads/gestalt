@@ -139,7 +139,6 @@ connectDB()
         const {username,sessionId}=socket;
         onlineUsers = onlineUsers.filter(id => id !== socket.id)
         if (sessionId && sessionUsers[sessionId]?.usernames) {
-          io.to(sessionId).emit("left", username);
           sessionUsers[sessionId].usernames = sessionUsers[sessionId].usernames.filter(
             (u) => u !== username
           );
