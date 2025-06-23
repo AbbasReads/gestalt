@@ -3,10 +3,13 @@ import {sessionRouter} from './routes/session.route.js'
 import cors from "cors"
 const app=express();
 app.use(cors({
-    origin:["http://localhost:*","https://gestalt-ashy.vercel.app/*"]
+    origin: [
+  /^http:\/\/localhost:\d+$/, // allows http://localhost:PORT (any port)
+  "https://gestalt-ashy.vercel.app" // exact match only
+]
+
 }))
 // const router=express.Router();
 
 app.use('/api/v1/session', sessionRouter)
-// app.use()
 export {app}
