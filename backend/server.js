@@ -18,6 +18,7 @@ const io = new Server(httpServer, {
 
 
 const sessionUsers = {}; // Key: sessionId, Value: usernames, passcode, files
+let onlineUsers = [];
 
 connectDB()
   .then(() => {
@@ -26,6 +27,7 @@ connectDB()
       socket.emit('connected');
       socket.on("message", async (payload) => {
         const { slug, message, username } = payload;
+        onlineUsers.push({ username, id: socket.id })
         io.to(slug).emit("reply", {
           sentBy: username,
           text: message,
@@ -44,6 +46,10 @@ connectDB()
           }
         );
       });
+
+      // socket.on('get-users', sessionId => {
+      //   const onlineUsers =
+      // })
 
       socket.on("file", async (payload) => {
         await Session.findOneAndUpdate(
@@ -104,14 +110,13 @@ connectDB()
         }
       });
 
-      socket.on("disconnect", async () => {
+      socket.on("leave", async () => {
         const { sessionId, username } = socket;
-        io.to(sessionId).emit("left", username);
         if (sessionId && sessionUsers[sessionId]?.usernames) {
+          io.to(sessionId).emit("left", username);
           sessionUsers[sessionId].usernames = sessionUsers[sessionId].usernames.filter(
             (u) => u !== username
           );
-
           if (sessionUsers[sessionId].usernames.length > 0) {
             io.to(sessionId).emit("users", sessionUsers[sessionId].usernames);
           } else {
@@ -125,9 +130,35 @@ connectDB()
             delete sessionUsers[sessionId];
           }
         }
+      }
+      )
 
+
+
+      socket.on("disconnect", async () => {
+        const {username,sessionId}=socket;
+        onlineUsers = onlineUsers.filter(id => id !== socket.id)
+        if (sessionId && sessionUsers[sessionId]?.usernames) {
+          io.to(sessionId).emit("left", username);
+          sessionUsers[sessionId].usernames = sessionUsers[sessionId].usernames.filter(
+            (u) => u !== username
+          );
+          if (sessionUsers[sessionId].usernames.length > 0) {
+            io.to(sessionId).emit("users", sessionUsers[sessionId].usernames);
+          } else {
+            if (sessionUsers[sessionId].files) {
+              await deleteFolder(sessionId);
+            }
+
+            Session.findOneAndDelete({ sessionId }).catch(err => {
+              console.log(err)
+            })
+            delete sessionUsers[sessionId];
+          }
+        }
         console.log(`${socket.id} disconnected`);
-      });
+      }
+      );
     });
 
     httpServer.listen(process.env.PORT, () => {

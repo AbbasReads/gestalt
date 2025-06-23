@@ -25,40 +25,61 @@ function Chat() {
   const lastMsgRef = useRef(null);
 
   useEffect(() => {
-    if (!localStorage.getItem("username")) setClosed(false);
+    if (!localStorage.getItem('username')) setClosed(false);
     else {
       socket.emit('join-user', { slug, passcode, username });
-      socket.on('joined', ({ messages }) => {
+
+      const handleJoined = ({ messages }) => {
         setChats(messages);
-      })
-      socket.on('left', username => {
-        enqueueSnackbar(`${username} left...`, { variant: 'error' })
-      })
-      socket.on('new-entry', (username) => {
-        enqueueSnackbar(`${username} joined...`, { variant: 'success' })
-      })
+      };
 
-      socket.on("unauthorised", () => {
+      const handleLeft = (username) => {
+        enqueueSnackbar(`${username} left...`, { variant: 'error' });
+      };
+
+      const handleNewEntry = (username) => {
+        enqueueSnackbar(`${username} joined...`, { variant: 'success' });
+      };
+
+      const handleUnauthorised = () => {
         navigate('/error');
-      })
+      };
 
-      socket.on('reply', (payload) => {
+      const handleReply = (payload) => {
         setSending(false);
         setChats(prev => [...prev, payload]);
-      });
-      socket.on("download-file", (payload) => {
+      };
+
+      const handleDownloadFile = (payload) => {
         setChats(prev => [...prev, payload]);
-      })
-      socket.on('users', (users) => {
+      };
+
+      const handleUsers = (users) => {
         setusers(users);
-      })
+      };
+
+      socket.on('joined', handleJoined);
+      socket.on('left', handleLeft);
+      socket.on('new-entry', handleNewEntry);
+      socket.on('unauthorised', handleUnauthorised);
+      socket.on('reply', handleReply);
+      socket.on('download-file', handleDownloadFile);
+      socket.on('users', handleUsers);
+
       return () => {
-        socket.disconnect();
+        socket.emit("leave");
+        socket.off('joined', handleJoined);
+        socket.off('left', handleLeft);
+        socket.off('new-entry', handleNewEntry);
+        socket.off('unauthorised', handleUnauthorised);
+        socket.off('reply', handleReply);
+        socket.off('download-file', handleDownloadFile);
+        socket.off('users', handleUsers);
       };
     }
   }, [slug, closed]);
+
   useEffect(() => {
-    // console.log(lastMsgRef);
     if (lastMsgRef.current)
       lastMsgRef.current.scrollIntoView({ behavior: 'smooth' });
   }, [chats])

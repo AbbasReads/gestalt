@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 
 const Prompt = ({ closeIt }) => {
-  const [username, setUsername] = useState('');
+  const [username, setUsername] = useState(localStorage.getItem('username')||'');
 
   const handleClick = () => {
     if (!username.trim()) return;
