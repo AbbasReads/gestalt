@@ -142,6 +142,28 @@ connectDB()
       )
 
       socket.on("disconnect", async () => {
+        const { sessionId, username } = socket;
+        if (sessionId && sessionUsers[sessionId]?.usernames) {
+          if (sessionUsers[sessionId].usernames.includes(username)) {
+            console.log(`${username} left`)
+            io.to(sessionId).emit("left", username);
+            sessionUsers[sessionId].usernames = sessionUsers[sessionId].usernames.filter(
+              (u) => u !== username
+            );
+            if (sessionUsers[sessionId].usernames.length > 0) {
+              io.to(sessionId).emit("users", sessionUsers[sessionId].usernames);
+            } else {
+              if (sessionUsers[sessionId].files) {
+                await deleteFolder(sessionId);
+              }
+
+              Session.findOneAndDelete({ sessionId }).catch(err => {
+                console.log(err)
+              })
+              delete sessionUsers[sessionId];
+            }
+          }
+        }
         onlineUsers = onlineUsers.filter(e => e.id !== socket.id)
         console.log(`${socket.id} disconnected`);
       }

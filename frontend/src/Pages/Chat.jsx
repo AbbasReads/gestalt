@@ -36,7 +36,6 @@ function Chat() {
         socket.emit("leave");
       };
       window.addEventListener("beforeunload", handleLeave);
-      window.addEventListener("pagehide", handleLeave);
 
       const handleJoined = ({ messages }) => {
         setChats(messages);
@@ -78,7 +77,6 @@ function Chat() {
       return () => {
         socket.emit("leave");
         window.removeEventListener("beforeunload", handleLeave);
-        window.removeEventListener("pagehide", handleLeave);
         socket.off('joined', handleJoined);
         socket.off('left', handleLeft);
         socket.off('new-entry', handleNewEntry);
