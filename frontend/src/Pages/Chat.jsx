@@ -32,10 +32,11 @@ function Chat() {
 
       // socket.emit("get-users",slug);
 
-      const handleUnload = () => {
+      const handleLeave = () => {
         socket.emit("leave");
       };
-      window.addEventListener("beforeunload", handleUnload);
+      window.addEventListener("beforeunload", handleLeave);
+      window.addEventListener("pagehide", handleLeave);
 
       const handleJoined = ({ messages }) => {
         setChats(messages);
@@ -76,7 +77,8 @@ function Chat() {
 
       return () => {
         socket.emit("leave");
-        window.removeEventListener("beforeunload", handleUnload);
+        window.removeEventListener("beforeunload", handleLeave);
+        window.removeEventListener("pagehide", handleLeave);
         socket.off('joined', handleJoined);
         socket.off('left', handleLeft);
         socket.off('new-entry', handleNewEntry);
@@ -149,7 +151,7 @@ function Chat() {
         <div className="w-full max-w-7xl h-[90vh] flex border border-neutral-700 rounded-xl overflow-hidden">
           {/* Sidebar for Users */}
           <div className="hidden md:flex w-64 bg-neutral-800 border-r border-neutral-700 p-4 flex-col justify-between overflow-y-auto">
-            <div> 
+            <div>
               <h2 className="text-lg font-semibold mb-2">Joined</h2>
               {users.map((user, index) => (
                 <div
