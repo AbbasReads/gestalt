@@ -9,25 +9,33 @@ import Button from '../components/Button.jsx';
 import { AnimatePresence } from 'motion/react';
 import { BACKEND_URL } from '../../info.js';
 import { enqueueSnackbar, closeSnackbar } from 'notistack';
+import OnlineUsers from '../components/OnlineUsers.jsx';
+import InviteButton from '../components/InviteButton.jsx';
 
 function Chat() {
   const navigate = useNavigate();
   const [message, setMessage] = useState('');
   const [chats, setChats] = useState([]);
-  const username = localStorage.getItem("username")
   const [file, setFile] = useState("")
   const { slug, passcode } = useParams();
-  const { socket, connected } = useContext(SocketContext);
+  const { socket, connected, closed, username } = useContext(SocketContext);
   const [users, setusers] = useState([])
-  const [closed, setClosed] = useState(true)
   const [sending, setSending] = useState(false);
   const [showInfo, setshowInfo] = useState(false);
   const lastMsgRef = useRef(null);
+  const [showOnline, setShowOnline] = useState(false);
+
 
   useEffect(() => {
-    if (!localStorage.getItem('username')) setClosed(false);
-    else {
+    if (closed) {
       socket.emit('join-user', { slug, passcode, username });
+
+      // socket.emit("get-users",slug);
+
+      const handleUnload = () => {
+        socket.emit("leave");
+      };
+      window.addEventListener("beforeunload", handleUnload);
 
       const handleJoined = ({ messages }) => {
         setChats(messages);
@@ -68,6 +76,7 @@ function Chat() {
 
       return () => {
         socket.emit("leave");
+        window.removeEventListener("beforeunload", handleUnload);
         socket.off('joined', handleJoined);
         socket.off('left', handleLeft);
         socket.off('new-entry', handleNewEntry);
@@ -124,18 +133,23 @@ function Chat() {
 
   return (
     <div className="min-h-screen bg-neutral-900 text-white flex flex-col items-center justify-center px-2 py-2">
-      {!closed && <Prompt closeIt={() => setClosed(true)}></Prompt>}
+      {closed || <Prompt />}
+
       <AnimatePresence>
         {showInfo && <Card setshowInfo={setshowInfo} users={users} />}
       </AnimatePresence>
-      <div className='flex h-6 w-full px-8 justify-end'>
-        {showInfo || <button className='md:hidden' onClick={onshowInfo}><img src="/assets/info.png" className='h-full' alt="Info" /></button>}
+      <AnimatePresence>
+        {showOnline && <OnlineUsers setShowOnline={setShowOnline} sessionId={slug} className='' />}
+      </AnimatePresence>
+      <div className='flex h-10 w-9/10 md:w-[70%] justify-between items-center px-5'>
+        <InviteButton setShowOnline={setShowOnline} />
+        {showInfo || <button className='md:hidden' onClick={onshowInfo}><img src="/assets/info.png" className='h-6' alt="Info" /></button>}
       </div>
       <div className='flex w-full p-2 justify-center '>
         <div className="w-full max-w-7xl h-[90vh] flex border border-neutral-700 rounded-xl overflow-hidden">
           {/* Sidebar for Users */}
           <div className="hidden md:flex w-64 bg-neutral-800 border-r border-neutral-700 p-4 flex-col justify-between overflow-y-auto">
-            <div>
+            <div> 
               <h2 className="text-lg font-semibold mb-2">Joined</h2>
               {users.map((user, index) => (
                 <div

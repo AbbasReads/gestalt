@@ -9,6 +9,9 @@ export const SocketContext = createContext();
 export const SocketProvider = ({ children }) => {
   const [socket] = useState(() => io(BACKEND_URL));
   const [connected, setConnected] = useState(false);
+  const [username, setUsername] = useState(localStorage.getItem('username')||"");
+  const [closed, setClosed] = useState(false)
+
 
   useEffect(() => {
     enqueueSnackbar("Connecting...", { variant: 'info', persist: true })
@@ -23,13 +26,12 @@ export const SocketProvider = ({ children }) => {
     
     return () => {
       socket.off("connect", handleConnect);
-      socket.disconnect();
       socket.off("disconnect", handleDisconnect);
     };
   }, [socket]);
 
   return (
-    <SocketContext.Provider value={{ socket, connected }}>
+    <SocketContext.Provider value={{ socket, connected,username,setUsername,closed,setClosed }}>
       {children}
     </SocketContext.Provider>
   );

@@ -1,4 +1,5 @@
-import { useState, useEffect, useContext } from 'react';
+import { useEffect, useContext } from 'react';
+import Prompt from '../components/Prompt.jsx';
 import { useNavigate } from 'react-router-dom';
 import {SocketContext} from '../context/SocketProvider.jsx'
 import Button from '../components/Button.jsx';
@@ -7,9 +8,8 @@ import { enqueueSnackbar, closeSnackbar } from 'notistack';
 import Loader from '../components/Loader.jsx';
 
 const LandingPage = () => {
-  const [username, setUsername] = useState(localStorage.getItem("username") || "");
   const navigate = useNavigate();
-  const { socket, connected } = useContext(SocketContext);
+  const { socket, connected,closed } = useContext(SocketContext);
 
   useEffect(() => {
     const handleChatPage = (payload) => {
@@ -27,21 +27,13 @@ const LandingPage = () => {
   }, [navigate, socket]);
 
   const handleCreateSession = () => {
-    const savedUsername = localStorage.getItem('username');
-    const nameToStore = username.trim() || savedUsername;
-
-    if (!nameToStore) {
-      alert("Please enter a username.");
-      return;
-    }
     enqueueSnackbar("Joining...", { variant: 'info', persist: true })
-    localStorage.setItem('username', nameToStore);
     socket.emit('create-session');
   };
 
   return (
     <div className="min-h-screen bg-neutral-900 flex flex-col items-center justify-center px-4 space-y-8">
-
+      {closed||<Prompt/>}
       {/* Gestalt Title */}
       <div className="text-center px-4">
         <ScrambledText
@@ -61,13 +53,13 @@ const LandingPage = () => {
           Create Chat Session
         </h1>
 
-        <input
+        {/* <input
           type="text"
           placeholder="Enter your username"
           className="w-full mb-4 px-4 py-2 rounded-lg bg-neutral-700 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-        />
+        /> */}
         <Button text="GO" handleClick={handleCreateSession} />
       </div> : <Loader />}
     </div>

@@ -31,7 +31,7 @@ const StyledWrapper = styled.div`
     position: absolute;
     width: 50%;
     height: 150%;
-    background: #000000;
+    background: #FFFFFF;
     transform: rotate(calc(var(--rotation) * 1deg)) translate(0, calc(var(--translation) * 1%));
     animation: spinner-fzua35 1s calc(var(--delay) * 1s) infinite ease;
   }

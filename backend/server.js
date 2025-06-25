@@ -25,9 +25,13 @@ connectDB()
     io.on("connection", (socket) => {
       console.log("connection established");
       socket.emit('connected');
+      socket.on("register-user", username => {
+        socket.username = username
+        onlineUsers.push({ username, id: socket.id })
+      });
+
       socket.on("message", async (payload) => {
         const { slug, message, username } = payload;
-        onlineUsers.push({ username, id: socket.id })
         io.to(slug).emit("reply", {
           sentBy: username,
           text: message,
@@ -47,9 +51,13 @@ connectDB()
         );
       });
 
-      // socket.on('get-users', sessionId => {
-      //   const onlineUsers =
-      // })
+      socket.on('get-users', sessionId => {
+        const uninvitees = sessionUsers[sessionId]?.usernames;
+        const others = onlineUsers.filter(e => (!(uninvitees?.includes(e.username))));
+        // console.log(others)
+        // console.log(uninvitees)
+        socket.emit('got-users', others);
+      })
 
       socket.on("file", async (payload) => {
         await Session.findOneAndUpdate(
@@ -100,7 +108,6 @@ connectDB()
         } else {
           socket.join(slug);
           socket.sessionId = slug;
-          socket.username = username;
 
           sessionUsers[slug].usernames.push(username);
           const session = await Session.findOne({ sessionId: slug })
@@ -113,6 +120,7 @@ connectDB()
       socket.on("leave", async () => {
         const { sessionId, username } = socket;
         if (sessionId && sessionUsers[sessionId]?.usernames) {
+          console.log(`${username} left`)
           io.to(sessionId).emit("left", username);
           sessionUsers[sessionId].usernames = sessionUsers[sessionId].usernames.filter(
             (u) => u !== username
@@ -133,28 +141,8 @@ connectDB()
       }
       )
 
-
-
       socket.on("disconnect", async () => {
-        const {username,sessionId}=socket;
-        onlineUsers = onlineUsers.filter(id => id !== socket.id)
-        if (sessionId && sessionUsers[sessionId]?.usernames) {
-          sessionUsers[sessionId].usernames = sessionUsers[sessionId].usernames.filter(
-            (u) => u !== username
-          );
-          if (sessionUsers[sessionId].usernames.length > 0) {
-            io.to(sessionId).emit("users", sessionUsers[sessionId].usernames);
-          } else {
-            if (sessionUsers[sessionId].files) {
-              await deleteFolder(sessionId);
-            }
-
-            Session.findOneAndDelete({ sessionId }).catch(err => {
-              console.log(err)
-            })
-            delete sessionUsers[sessionId];
-          }
-        }
+        onlineUsers = onlineUsers.filter(e => e.id !== socket.id)
         console.log(`${socket.id} disconnected`);
       }
       );

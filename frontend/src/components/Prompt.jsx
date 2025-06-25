@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import  { useState,useContext } from 'react';
 import { createPortal } from 'react-dom';
+import { SocketContext } from '../context/SocketProvider';
 
-const Prompt = ({ closeIt }) => {
-  const [username, setUsername] = useState(localStorage.getItem('username')||'');
+const Prompt = () => {
+ const {socket,username,setUsername,setClosed}=useContext(SocketContext);
 
   const handleClick = () => {
     if (!username.trim()) return;
     localStorage.setItem('username', username.trim());
-    closeIt();
+    socket.emit("register-user",username);
+    setClosed(true)
   };
 
   return createPortal(
@@ -15,7 +17,7 @@ const Prompt = ({ closeIt }) => {
       {/* Background Overlay with blur */}
       <div
         className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
-        onClick={closeIt}
+        onClick={handleClick}
       />
 
       {/* Centered Popup */}
