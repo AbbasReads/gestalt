@@ -2,6 +2,8 @@ import { SocketContext } from "../context/SocketProvider";
 import { useContext, useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { useParams } from "react-router";
+import Button from "./Button";
+import InviteButton from "./InviteButton";
 
 const OnlineUsers = ({ sessionId, setShowOnline }) => {
   const {passcode}=useParams();
@@ -36,9 +38,9 @@ const OnlineUsers = ({ sessionId, setShowOnline }) => {
         </div>
 
         <div>
-          <h2 className="text-lg font-semibold mb-2">Online Users</h2>
+          <h2 className="text-lg font-semibold mb-2">Online</h2>
           {online.length === 0 ? (
-            <div className="text-gray-400 italic text-sm">No users online</div>
+            <div className="text-gray-400 italic text-sm">No outsiders online</div>
           ) : (
             online.map((item) => (
               <div key={item.id}
@@ -48,7 +50,8 @@ const OnlineUsers = ({ sessionId, setShowOnline }) => {
                 >
                   {item.username}
                 </div>
-                <button className="font-semibold" onClick={() => handleInvite(item.id)}>Invite</button>
+                {/* <button className="font-semibold" onClick={() => handleInvite(item.id)}>Invite</button> */}
+                <InviteButton onClick={() => handleInvite(item.id)}/>
               </div>
             ))
           )}

@@ -153,7 +153,7 @@ function Chat() {
         {showOnline && <OnlineUsers setShowOnline={setShowOnline} sessionId={slug} className='' />}
       </AnimatePresence>
       <div className='flex h-10 w-9/10 md:w-[70%] justify-between items-center px-5'>
-        <InviteButton setShowOnline={setShowOnline} />
+        <Button text='Outsiders' handleClick={setShowOnline} />
         {showInfo || <button className='md:hidden' onClick={onshowInfo}><img src="/assets/info.png" className='h-6' alt="Info" /></button>}
       </div>
       <div className='flex w-full p-2 justify-center '>

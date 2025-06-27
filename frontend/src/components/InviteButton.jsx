@@ -1,12 +1,12 @@
 
 import styled from 'styled-components';
 
-const InviteButton = ({setShowOnline}) => {
+const InviteButton = ({ onClick }) => {
 
   return (
     <StyledWrapper>
-      <button onClick={()=>setShowOnline(prev=>!prev)}>
-        <span className="button_top"> Invite </span>
+      <button onClick={onClick}>
+        <span className="button_top font-patrick ">Invite</span>
       </button>
     </StyledWrapper>
   );
