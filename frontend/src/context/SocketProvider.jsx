@@ -1,5 +1,6 @@
 // src/context/SocketContext.js
 import { createContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import { io } from "socket.io-client";
 import { BACKEND_URL } from "../../info";
 import { enqueueSnackbar, closeSnackbar } from "notistack";
@@ -9,12 +10,13 @@ import withReactContent from 'sweetalert2-react-content'
 export const SocketContext = createContext();
 
 export const SocketProvider = ({ children }) => {
+  const navigate=useNavigate();
   const [socket] = useState(() => io(BACKEND_URL));
   const [connected, setConnected] = useState(false);
   const [username, setUsername] = useState(localStorage.getItem('username') || "");
   const [closed, setClosed] = useState(false)
 
-  const showSwal = (sender) => {
+  const showSwal = ({sender,sessionId,passcode}) => {
     withReactContent(Swal).fire({
       title: `${sender} invited you.`,
       timer: 10000,
@@ -32,10 +34,13 @@ export const SocketProvider = ({ children }) => {
         timerProgressBar: 'timer-progress'
       }
     })
-    // .then((result) => {
-    //   if (result.isConfirmed) {
-    //     Swal.fire('Accepted!', 'You have accepted the invite.', 'success');
-    //   } else if (result.isDismissed) {
+      .then((result) => {
+        if (result.isConfirmed) {
+                navigate(`/session/${sessionId}/${passcode}`);
+        }
+      }
+      )
+    //  else if (result.isDismissed) {
     //     Swal.fire('Declined', 'You have declined the invite.', 'info');
     //   }
     // });
@@ -49,7 +54,7 @@ export const SocketProvider = ({ children }) => {
     };
     const handleDisconnect = () => setConnected(false);
     socket.on('send-invite', (payload) => {
-      showSwal(payload.sender);
+      showSwal(payload);
     })
     socket.on("connect", handleConnect);
     socket.on("disconnect", handleDisconnect);

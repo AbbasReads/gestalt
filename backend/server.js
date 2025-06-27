@@ -144,8 +144,8 @@ connectDB()
       }
       )
 
-      socket.on('invite', ({ id, sessionId, sender }) => {
-        socket.to(id).emit("send-invite", { sessionId, sender });
+      socket.on('invite', ({ id, sessionId, sender,passcode }) => {
+        socket.to(id).emit("send-invite", { sessionId, sender,passcode });
       })
 
       socket.on("disconnect", async () => {

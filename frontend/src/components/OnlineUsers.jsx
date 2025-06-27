@@ -1,13 +1,15 @@
 import { SocketContext } from "../context/SocketProvider";
 import { useContext, useState, useEffect } from "react";
 import { motion } from "motion/react";
+import { useParams } from "react-router";
 
 const OnlineUsers = ({ sessionId, setShowOnline }) => {
+  const {passcode}=useParams();
   const { socket, username } = useContext(SocketContext);
   const [online, setOnline] = useState([]);
 
   const handleInvite = (id) => {
-    socket.emit("invite", { id, sessionId, sender: username });
+    socket.emit("invite", { id, sessionId, sender: username,passcode });
   }
 
   useEffect(() => {

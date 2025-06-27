@@ -16,8 +16,8 @@ const root = document.getElementById("root");
 
 // Render app with context provider
 ReactDOM.createRoot(root).render(
-  <SocketProvider>
-    <BrowserRouter>
+  <BrowserRouter>
+    <SocketProvider>
       <SnackbarProvider autoHideDuration={4000}>
         <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -26,6 +26,6 @@ ReactDOM.createRoot(root).render(
           <Route path="/session/:slug" element={<Unauthorised />}></Route>
         </Routes>
       </SnackbarProvider>
-    </BrowserRouter>
-  </SocketProvider>
+    </SocketProvider>
+  </BrowserRouter>
 );
