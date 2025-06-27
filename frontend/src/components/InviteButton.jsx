@@ -6,7 +6,7 @@ const InviteButton = ({ onClick }) => {
   return (
     <StyledWrapper>
       <button onClick={onClick}>
-        <span className="button_top font-patrick ">Invite</span>
+        <span className="button_top">Invite</span>
       </button>
     </StyledWrapper>
   );

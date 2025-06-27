@@ -15,35 +15,56 @@
   width: 15rem;
   /* rounded-xl */
   padding: 1rem;
-  font-family: 'Patrick Hand', cursive;
   color: white;
 }
 
 .custom-title {
   font-size: 1.25rem;
   font-weight: 600;
+  font-family: 'Patrick Hand', cursive;
 }
 
 .custom-accept-btn {
-  background-color: #10b981;
-  /* green-500 */
-  color: white;
+  background-color: #ffffff;
+  color: black;
   padding: 0.5rem 1.25rem;
+  border: 2px solid black;
   border-radius: 0.5rem;
   font-weight: bold;
-  font-family: 'Patrick Hand', cursive;
   margin-right: 0.5rem;
+  transition: transform 0.1s ease, background-color 0.2s ease;
+}
+
+.custom-accept-btn:hover {
+  background-color: #d4d4d4; /* Slightly darker on hover */
+  transform: scale(1.05);
+}
+
+.custom-accept-btn:active {
+  transform: scale(0.95);
+  background-color: #bdbdbd;
 }
 
 .custom-decline-btn {
-  background-color: #ef4444;
-  /* red-500 */
+  background-color: black;
+  border: 2px solid white;
   color: white;
   padding: 0.5rem 1.25rem;
   border-radius: 0.5rem;
   font-weight: bold;
-  font-family: 'Patrick Hand', cursive;
+  transition: transform 0.1s ease, background-color 0.2s ease;
 }
+
+.custom-decline-btn:hover {
+  background-color: #1a1a1a; /* Lighter black on hover */
+  transform: scale(1.05);
+}
+
+.custom-decline-btn:active {
+  transform: scale(0.95);
+  background-color: #333;
+}
+
 
 .timer-progress {
   background-color: #1e40af;

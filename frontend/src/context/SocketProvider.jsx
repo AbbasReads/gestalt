@@ -40,10 +40,6 @@ export const SocketProvider = ({ children }) => {
         }
       }
       )
-    //  else if (result.isDismissed) {
-    //     Swal.fire('Declined', 'You have declined the invite.', 'info');
-    //   }
-    // });
   }
 
   useEffect(() => {

@@ -10,7 +10,6 @@ import { AnimatePresence } from 'motion/react';
 import { BACKEND_URL } from '../../info.js';
 import { enqueueSnackbar, closeSnackbar } from 'notistack';
 import OnlineUsers from '../components/OnlineUsers.jsx';
-import InviteButton from '../components/InviteButton.jsx';
 
 function Chat() {
   const navigate = useNavigate();

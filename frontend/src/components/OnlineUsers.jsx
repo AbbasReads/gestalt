@@ -50,7 +50,6 @@ const OnlineUsers = ({ sessionId, setShowOnline }) => {
                 >
                   {item.username}
                 </div>
-                {/* <button className="font-semibold" onClick={() => handleInvite(item.id)}>Invite</button> */}
                 <InviteButton onClick={() => handleInvite(item.id)}/>
               </div>
             ))
