@@ -25,6 +25,17 @@ function Chat() {
   const lastMsgRef = useRef(null);
   const [showOnline, setShowOnline] = useState(false);
 
+  const action = snackbarId => (
+    <>
+      <button
+        onClick={() => closeSnackbar(snackbarId)}
+        className="m-1 p-2 rounded-xl bg-black/30 backdrop-blur-sm text-white transition"
+      >
+        Dismiss
+      </button>
+
+    </>
+  );
 
   useEffect(() => {
     if (closed) {
@@ -42,11 +53,11 @@ function Chat() {
       };
 
       const handleLeft = (username) => {
-        enqueueSnackbar(`${username} left...`, { variant: 'error' });
+        enqueueSnackbar(`${username} left...`, { action, variant: 'error' });
       };
 
       const handleNewEntry = (username) => {
-        enqueueSnackbar(`${username} joined...`, { variant: 'success' });
+        enqueueSnackbar(`${username} joined...`, { action, variant: 'success', action });
       };
 
       const handleUnauthorised = () => {
@@ -107,7 +118,7 @@ function Chat() {
       }).then(response => response.json())
         .then(response => {
           if (response.statusCode == 402) {
-            enqueueSnackbar(response.message, { variant: 'warning', style: 'background color:red' })
+            enqueueSnackbar(response.message, { action, variant: 'warning', style: 'background color:red' })
           }
           else {
             const fileLink = response.data;

@@ -9,7 +9,7 @@ import Loader from '../components/Loader.jsx';
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const { socket, connected,closed } = useContext(SocketContext);
+  const { socket, connected,closed} = useContext(SocketContext);
 
   useEffect(() => {
     const handleChatPage = (payload) => {

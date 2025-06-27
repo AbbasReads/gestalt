@@ -21,7 +21,7 @@ const Prompt = () => {
       />
 
       {/* Centered Popup */}
-      <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-neutral-800 p-6 rounded-xl shadow-lg z-50 w-80">
+      <div className="fixed flex flex-col items-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-neutral-800 p-6 rounded-xl shadow-lg z-50 w-80">
         <h2 className="text-white text-xl font-semibold mb-4 text-center">
           Enter Username
         </h2>
@@ -34,7 +34,7 @@ const Prompt = () => {
         />
         <button
           onClick={handleClick}
-          className="w-full bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
+          className="font-semibold bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition"
         >
           Continue
         </button>

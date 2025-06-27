@@ -3,11 +3,11 @@ import { useContext, useState, useEffect } from "react";
 import { motion } from "motion/react";
 
 const OnlineUsers = ({ sessionId, setShowOnline }) => {
-  const { socket } = useContext(SocketContext);
+  const { socket, username } = useContext(SocketContext);
   const [online, setOnline] = useState([]);
 
   const handleInvite = (id) => {
-    socket.emit("invite", { id, sessionId });
+    socket.emit("invite", { id, sessionId, sender: username });
   }
 
   useEffect(() => {
@@ -34,14 +34,14 @@ const OnlineUsers = ({ sessionId, setShowOnline }) => {
         </div>
 
         <div>
-          <h2 className="text-lg text-blue-400 font-semibold mb-2">Online Users</h2>
+          <h2 className="text-lg font-semibold mb-2">Online Users</h2>
           {online.length === 0 ? (
             <div className="text-gray-400 italic text-sm">No users online</div>
           ) : (
-            online.map((item, index) => (
-              <div className="flex px-3 py-2  rounded-lg bg-neutral-700 justify-between">
+            online.map((item) => (
+              <div key={item.id}
+                className="flex px-3 py-2 m-1 rounded-lg bg-neutral-700 justify-between">
                 <div
-                  key={index}
                   className="text-2xl text-gray-200 font-patrick break-words mb-2"
                 >
                   {item.username}

@@ -1,8 +1,54 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Bubblegum+Sans&family=Patrick+Hand&display=swap');
 @import "tailwindcss";
 
-@theme{
-  --font-bubblegum:"Bubblegum Sans", "sans-serif";
-  --font-patrick:"Patrick Hand", "cursive";
+@theme {
+  --font-bubblegum: "Bubblegum Sans", "sans-serif";
+  --font-patrick: "Patrick Hand", "cursive";
+}
+
+.custom-popup {
+  background-color: #262626;
+  /* bg-neutral-800 */
+  border: 1px solid #1e40af;
+  /* border-blue-800 */
+  border-radius: 0.75rem;
+  width: 15rem;
+  /* rounded-xl */
+  padding: 1rem;
+  font-family: 'Patrick Hand', cursive;
+  color: white;
+}
+
+.custom-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.custom-accept-btn {
+  background-color: #10b981;
+  /* green-500 */
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  font-family: 'Patrick Hand', cursive;
+  margin-right: 0.5rem;
+}
+
+.custom-decline-btn {
+  background-color: #ef4444;
+  /* red-500 */
+  color: white;
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.5rem;
+  font-weight: bold;
+  font-family: 'Patrick Hand', cursive;
+}
+
+.timer-progress {
+  background-color: #1e40af;
+  border-radius: 0.75rem;
+  justify-self: center;
+  width: 95%;
+  bottom: 10px;
 }

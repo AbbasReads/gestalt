@@ -12,8 +12,8 @@ dotenv.config({ path: './.env' });
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin:  [
-      /^http:\/\/localhost:\d+$/, 
+    origin: [
+      /^http:\/\/localhost:\d+$/,
       "https://gestalt-ashy.vercel.app"
     ]
   }
@@ -143,6 +143,10 @@ connectDB()
         }
       }
       )
+
+      socket.on('invite', ({ id, sessionId, sender }) => {
+        socket.to(id).emit("send-invite", { sessionId, sender });
+      })
 
       socket.on("disconnect", async () => {
         const { sessionId, username } = socket;
