@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import LandingPage from "./Pages/LandingPage";
 import Chat from "./Pages/Chat";
-import "./index.css";
+import "/src/index.css";
 import Unauthorised from "./Pages/Unauthorised";
 import { SnackbarProvider } from "notistack";
 import { SocketProvider } from "./context/SocketProvider";
