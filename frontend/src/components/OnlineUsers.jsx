@@ -6,9 +6,13 @@ const OnlineUsers = ({ sessionId, setShowOnline }) => {
   const { socket } = useContext(SocketContext);
   const [online, setOnline] = useState([]);
 
+  const handleInvite = (id) => {
+    socket.emit("invite", { id, sessionId });
+  }
+
   useEffect(() => {
     socket.emit("get-users", sessionId)
-    const interval=setInterval(()=>socket.emit("get-users", sessionId),5000);
+    const interval = setInterval(() => socket.emit("get-users", sessionId), 5000);
     socket.on("got-users", (users) => setOnline(users));
 
     return () => {
@@ -35,11 +39,14 @@ const OnlineUsers = ({ sessionId, setShowOnline }) => {
             <div className="text-gray-400 italic text-sm">No users online</div>
           ) : (
             online.map((item, index) => (
-              <div
-                key={index}
-                className="px-3 py-2 bg-neutral-700 rounded-lg text-2xl text-gray-200 font-patrick break-words mb-2"
-              >
-                {item.username}
+              <div className="flex px-3 py-2  rounded-lg bg-neutral-700 justify-between">
+                <div
+                  key={index}
+                  className="text-2xl text-gray-200 font-patrick break-words mb-2"
+                >
+                  {item.username}
+                </div>
+                <button className="font-semibold" onClick={() => handleInvite(item.id)}>Invite</button>
               </div>
             ))
           )}

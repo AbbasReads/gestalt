@@ -12,7 +12,10 @@ dotenv.config({ path: './.env' });
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
   cors: {
-    origin: '*'
+    origin:  [
+      /^http:\/\/localhost:\d+$/, 
+      "https://gestalt-ashy.vercel.app"
+    ]
   }
 });
 
