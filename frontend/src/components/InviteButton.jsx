@@ -1,12 +1,12 @@
 
 import styled from 'styled-components';
 
-const InviteButton = ({ onClick }) => {
+const InviteButton = ({ text,onClick }) => {
 
   return (
     <StyledWrapper>
       <button onClick={onClick}>
-        <span className="button_top">Invite</span>
+        <span className="button_top">{text}</span>
       </button>
     </StyledWrapper>
   );

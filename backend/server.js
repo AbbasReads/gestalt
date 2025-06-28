@@ -57,8 +57,6 @@ connectDB()
       socket.on('get-users', sessionId => {
         const uninvitees = sessionUsers[sessionId]?.usernames;
         const others = onlineUsers.filter(e => (!(uninvitees?.includes(e.username))));
-        // console.log(others)
-        // console.log(uninvitees)
         socket.emit('got-users', others);
       })
 
@@ -158,6 +156,7 @@ connectDB()
               (u) => u !== username
             );
             if (sessionUsers[sessionId].usernames.length > 0) {
+              
               io.to(sessionId).emit("users", sessionUsers[sessionId].usernames);
             } else {
               if (sessionUsers[sessionId].files) {

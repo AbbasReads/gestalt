@@ -10,6 +10,7 @@ import { AnimatePresence } from 'motion/react';
 import { BACKEND_URL } from '../../info.js';
 import { enqueueSnackbar, closeSnackbar } from 'notistack';
 import OnlineUsers from '../components/OnlineUsers.jsx';
+import InviteButton from '../components/InviteButton.jsx';
 
 function Chat() {
   const navigate = useNavigate();
@@ -56,7 +57,7 @@ function Chat() {
       };
 
       const handleNewEntry = (username) => {
-        enqueueSnackbar(`${username} joined...`, { action, variant: 'success', action });
+        enqueueSnackbar(`${username} joined...`, { action, variant: 'success'});
       };
 
       const handleUnauthorised = () => {
@@ -152,7 +153,7 @@ function Chat() {
         {showOnline && <OnlineUsers setShowOnline={setShowOnline} sessionId={slug} className='' />}
       </AnimatePresence>
       <div className='flex h-10 w-9/10 md:w-[70%] justify-between items-center px-5'>
-        <Button text='Outsiders' handleClick={setShowOnline} />
+        <InviteButton text='Invite People' onClick={()=>setShowOnline(prev=>!prev)} />
         {showInfo || <button className='md:hidden' onClick={onshowInfo}><img src="/assets/info.png" className='h-6' alt="Info" /></button>}
       </div>
       <div className='flex w-full p-2 justify-center '>

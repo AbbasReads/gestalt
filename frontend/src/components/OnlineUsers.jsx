@@ -2,16 +2,28 @@ import { SocketContext } from "../context/SocketProvider";
 import { useContext, useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { useParams } from "react-router";
-import Button from "./Button";
 import InviteButton from "./InviteButton";
+import { enqueueSnackbar } from "notistack";
 
 const OnlineUsers = ({ sessionId, setShowOnline }) => {
-  const {passcode}=useParams();
+  const action = snackbarId => (
+    <>
+      <button
+        onClick={() => closeSnackbar(snackbarId)}
+        className="m-1 p-2 rounded-xl bg-black/30 backdrop-blur-sm text-white transition"
+      >
+        Dismiss
+      </button>
+
+    </>
+  );
+  const { passcode } = useParams();
   const { socket, username } = useContext(SocketContext);
   const [online, setOnline] = useState([]);
 
-  const handleInvite = (id) => {
-    socket.emit("invite", { id, sessionId, sender: username,passcode });
+  const handleInvite = ({name,id}) => {
+    socket.emit("invite", { id, sessionId, sender: username, passcode });
+    enqueueSnackbar(`Invite sent to ${name}`, { action, variant: 'info' });
   }
 
   useEffect(() => {
@@ -50,7 +62,7 @@ const OnlineUsers = ({ sessionId, setShowOnline }) => {
                 >
                   {item.username}
                 </div>
-                <InviteButton onClick={() => handleInvite(item.id)}/>
+                <InviteButton text="Invite" onClick={() => handleInvite({id:item.id,name:item.username})} />
               </div>
             ))
           )}
