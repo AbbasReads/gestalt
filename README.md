@@ -7,7 +7,7 @@ Gestalt is a file and text sharing platform for quick collaboration.
 - Invite anyone online
 - Only those who have the invite can enter the session
 
-## Installation tips
+## Hosting tips
 - To start frontend or backend : `npm run dev`
 - Change backend address in info.js
 
