@@ -57,7 +57,7 @@ function Chat() {
       };
 
       const handleNewEntry = (username) => {
-        enqueueSnackbar(`${username} joined...`, { action, variant: 'success'});
+        enqueueSnackbar(`${username} joined...`, { action, variant: 'success' });
       };
 
       const handleUnauthorised = () => {
@@ -106,8 +106,8 @@ function Chat() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setSending(true)
     if (file) {
+      setSending(true)
       const formData = new FormData();
       formData.append("file", file);
       formData.append("sessionId", slug);
@@ -131,6 +131,7 @@ function Chat() {
     }
     else {
       if (message.trim()) {
+        setSending(true)
         socket.emit('message', { slug, username, message });
         setMessage('');
         setFile("");
@@ -153,7 +154,7 @@ function Chat() {
         {showOnline && <OnlineUsers setShowOnline={setShowOnline} sessionId={slug} className='' />}
       </AnimatePresence>
       <div className='flex h-10 w-9/10 md:w-[70%] justify-between items-center px-5'>
-        <InviteButton text='Invite People' onClick={()=>setShowOnline(prev=>!prev)} />
+        <InviteButton text='Invite People' onClick={() => setShowOnline(prev => !prev)} />
         {showInfo || <button className='md:hidden' onClick={onshowInfo}><img src="/assets/info.png" className='h-6' alt="Info" /></button>}
       </div>
       <div className='flex w-full p-2 justify-center '>
