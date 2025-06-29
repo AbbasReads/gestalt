@@ -3,7 +3,7 @@ import { useContext, useState, useEffect } from "react";
 import { motion } from "motion/react";
 import { useParams } from "react-router";
 import InviteButton from "./InviteButton";
-import { enqueueSnackbar } from "notistack";
+import { enqueueSnackbar,closeSnackbar } from "notistack";
 
 const OnlineUsers = ({ sessionId, setShowOnline }) => {
   const action = snackbarId => (

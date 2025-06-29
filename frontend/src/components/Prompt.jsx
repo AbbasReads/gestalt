@@ -23,7 +23,7 @@ const Prompt = () => {
       {/* Centered Popup */}
       <div className="fixed flex flex-col items-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-neutral-800 p-6 rounded-xl shadow-lg z-50 w-80">
         <h2 className="text-white text-xl font-semibold mb-4 text-center">
-          Enter Username
+          Enter display name
         </h2>
         <input
           type="text"
